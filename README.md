@@ -5,7 +5,7 @@
 **Project Status:** Ready for Development  
 **Team:** 2 Developers (Web + Mobile)  
 
-**🎯 Project Goal:** Simple, kid-friendly, fast-to-build preschool management system
+**🎯 Project Goal:** Auto-Billing System, One-by-One Photo Attendance, HQ Configurable Packages
 
 ---
 
@@ -18,6 +18,7 @@
 | [02-user-roles.md](02-user-roles.md) | Detailed user roles, permissions, and workflows | Development Team | ✅ Complete |
 | [03-feature-specifications.md](03-feature-specifications.md) | Comprehensive feature requirements and specifications | Product Team | ✅ Complete |
 | [04-sitemaps-flows.md](04-sitemaps-flows.md) | Site maps, user flows, and navigation patterns | UX/UI Team | ✅ Complete |
+| [10-menu-ideas.md](10-menu-ideas.md) | Complete developer-ready menu hierarchy & navigation structure | Development Team | ✅ Complete |
 | [05-technical-requirements.md](05-technical-requirements.md) | Technical architecture, APIs, and infrastructure | Development Team | ✅ Complete |
 | [06-context-questions.md](06-context-questions.md) | Structured questions for requirement gathering | Project Managers | ✅ Complete |
 | [07-business-specifications.md](07-business-specifications.md) | Detailed business logic and configurations | All Teams | ✅ Complete |
@@ -31,6 +32,7 @@
 - **ROI Planning:** [Feature Specifications](03-feature-specifications.md) → What features deliver value
 
 #### 👨‍💻 For Development Team
+- **Menu Structure:** [Complete Menu Hierarchy](10-menu-ideas.md) → Developer-ready navigation structure with components & paths
 - **Technical Deep Dive:** [Technical Requirements](05-technical-requirements.md) → Architecture and implementation
 - **User Experience:** [Sitemaps & Flows](04-sitemaps-flows.md) → Navigation and user journeys
 - **Feature Details:** [Feature Specifications](03-feature-specifications.md) → Detailed requirements
@@ -94,11 +96,11 @@
 **Focus:** Administrative functions, reporting, management oversight
 
 #### Key Features
-- **Network-wide Dashboard** with real-time analytics
-- **Student Management** with enrollment and tracking
-- **Teacher Management** and performance monitoring
-- **Financial Oversight** and payment tracking
-- **Communication Hub** for announcements and messaging
+- **HQ Configurable Packages** with configurable amounts and billing dates
+- **Auto-Billing System** with enrollment-triggered invoice generation
+- **Student Management** with auto-invoice generation
+- **Configurable Admin Accounts** creation
+- **Audit Logs** for all billing activities
 
 ### Mobile Application (React Native)
 **Users:** Teachers, Parents  
@@ -112,16 +114,16 @@
 3. **Messages** - Email-style communication within branch
 4. **Profile** - Account settings and information
 
-**Key Teacher Rules:**
-- Only see admin-assigned classrooms
-- Attendance: Present/Absent only (no Late)
-- Past attendance edits require approval
-- Grades tied to exam types (Midterm, Final, etc.)
+**Key Teacher Rules (Final Requirements):**
+- One-by-one photo attendance (mandatory for present students)
+- No backup methods for attendance photos
+- Classroom posts publish immediately (no approval)
+- Only assigned classrooms visible
 
 #### Parent Features (5 Simple Screens)
 1. **Dashboard** - Child's daily status and updates (swipeable child cards)
 2. **My Child** - Attendance, classroom updates (text only), progress reports
-3. **Payments** - Upload receipt photos, track payments
+3. **Payments** - Auto-billing notifications (25th), Billplz payments
 4. **Messages** - Communicate with teachers (basic messaging)
 5. **Profile** - Settings and app preferences (no family photo)
 

@@ -1,8 +1,6 @@
 # 👥 User Roles & Permissions - BrightHill Connect
 
-**Version:** 2.0  
-**Last Updated:** 2025-08-26  
-**Updated:** Added Financial Staff and Teachers roles, Payment Gateway features  
+**Auto-Billing System, Configurable Admin Accounts, One-by-One Photo Attendance**  
 
 ## 🏛 1. Central Admin (HQ Management)
 
@@ -12,11 +10,11 @@
 - **Access Level:** Network-wide across all branches
 
 ### Core Responsibilities
-- Strategic oversight of entire BrightHill network
-- Branch performance monitoring and analytics
-- System configuration and user management
-- Financial oversight and reporting
-- Branding consistency maintenance
+- Create branches (auto-generates Principal accounts)
+- Network-wide user management and analytics
+- HQ configurable packages and billing configuration
+- Network-wide announcements (All Network, All Teachers, All Parents, Specific Branch)
+- System oversight and audit logs review
 
 ### Key Permissions
 | Feature Category | Permissions | Details |
@@ -27,68 +25,17 @@
 | **System Settings** | Full Control | Branding, app configuration, role permissions |
 | **Analytics** | Full Access | Network-wide performance metrics |
 
-### Dashboard Features
-- **Real-time Attendance Widget** - Live attendance across all branches
-- **Financial Performance Overview** - Revenue, collection rates, outstanding fees
-- **Network Activity Feed** - Recent activities across all branches
-- **Branch Performance Comparison** - Comparative analytics between branches
-- **User Activity Monitoring** - System usage and engagement metrics
+### Key Features
+- **Branch Creation** - Auto-generates Principal account for each new branch
+- **HQ Configurable Packages** - Set programme types with configurable amounts
+- **Billing Configuration** - Configure notification (25th) and due dates (1st)
+- **Network Announcements** - Target all network, teachers, parents, or specific branches
+- **Principal Assignment** - Reassign principal role to different admin accounts
 
 ---
 
-## 💰 2. Financial Staff (Branch Level)
 
-### Platform Access
-- **Primary:** Web Application (Vue/Nuxt)
-- **Secondary:** Mobile app for notifications
-- **Access Level:** Single branch financial operations only
-
-### Core Responsibilities
-- Monthly billing and invoice creation for students
-- Payment tracking and collection management
-- Parent payment verification and approval
-- Financial reporting for branch operations
-- Outstanding fees follow-up and management
-
-### Key Permissions
-| Feature Category | Permissions | Details |
-|------------------|-------------|---------|
-| **Student Billing** | Full CRUD | Create monthly bills, manage invoices |
-| **Payment Processing** | Create/Approve | Generate bills, verify payments |
-| **Financial Reports** | Read/Generate | Branch revenue, collection rates |
-| **Invoice Management** | Full CRUD | Create, edit, track student invoices |
-| **Payment Gateway** | Execute/Monitor | Process payments, track transactions |
-
-### Bill Creation Workflow
-1. **Monthly Billing Process**
-   - Staff go to billing system
-   - Select students for monthly charges
-   - Enter billing items (tuition, meals, activities) and amounts
-   - Generate invoices automatically
-   - Parents receive notifications on mobile app
-
-2. **Payment Tracking**
-   - Monitor incoming payments (gateway/manual)
-   - Verify uploaded payment receipts
-   - Update payment status (paid/pending/overdue)
-   - Generate payment confirmations
-
-### Dashboard Features
-- **Outstanding Bills Overview** - Unpaid invoices by student
-- **Payment Collection Summary** - Daily/monthly collection rates
-- **Revenue Analytics** - Income trends and financial forecasting
-- **Parent Payment Activity** - Recent payments and pending bills
-- **Financial Alerts** - Overdue payments requiring follow-up
-
-### Access Restrictions
-- **Branch Limitation:** Only assigned branch financial data
-- **Financial Focus:** Cannot modify academic or attendance records
-- **No User Management:** Cannot create/modify user accounts
-- **Payment Categories Only:** Limited to billing and payment functions
-
----
-
-## 👩‍🏫 3. Teachers Role (Web Admin) - Similar to Principal but Limited
+## 👩‍🏫 2. Teachers Role (Web Admin) - Similar to Principal but Limited
 
 ### Platform Access
 - **Primary:** Web Application (Vue/Nuxt)
@@ -118,9 +65,10 @@
 - **Dashboard:** Class overview, attendance summary, today's alerts
 
 ### Dashboard Features (Same as Principal)
-- **Assigned Classes Overview** - Current class assignments and student counts
-- **Photo Attendance Summary** - Daily attendance with photo requirements  
-- **Today's Summary** - Key metrics and alerts for assigned classes
+- **Assigned Classes Overview** - Current class assignments and student counts (cards: view-only class info with student counts)
+- **Photo Attendance Summary** - Daily attendance with photo requirements (alerts: pending attendance, grade submissions)
+- **Today's Summary** - Key metrics and alerts for assigned classes (buttons: rapid attendance, grade entry shortcuts)
+- **Recent Activity** - Feed of recent posts, messages, notifications
 
 ### Access Restrictions
 - **Class Limitation:** Only assigned classes visible (not all branch classes)
@@ -131,7 +79,7 @@
 
 ---
 
-## 🏫 4. Branch Principal
+## 🏫 3. Branch Principal
 
 ### Platform Access
 - **Primary:** Web Application (Vue/Nuxt)
@@ -139,11 +87,11 @@
 - **Access Level:** Single branch with full operational control
 
 ### Core Responsibilities
-- Daily branch operations management
-- Student enrollment and record keeping
-- Teacher recruitment and management
-- Parent communication and relationship building
-- Local financial management (fee collection)
+- Student enrollment (auto-generates Registration + Monthly invoices from enrollment to year-end)
+- Teacher and class management
+- Create configurable admin accounts with page-level permissions
+- Handle parent messages (or delegate to admin with Message Permission)
+- Branch-specific announcements to teachers/parents
 
 ### Key Permissions
 | Feature Category | Permissions | Details |
@@ -152,26 +100,28 @@
 | **Teacher Management** | Full CRUD | Branch teachers only |
 | **Class Organization** | Full CRUD | Class creation and student assignment |
 | **Communications** | Create/Edit | Announcements, parent messaging |
-| **Financial Tracking** | Read/Report | Branch fee collection and invoicing |
+| **Billing & Invoices** | Create/Manage | Student billing, add additional items (no parent approval) |
+| **Admin Account Creation** | Full CRUD | Create admin accounts with granular page permissions |
+| **Parent Messages** | Handle/Reply | Receive and respond to parent messages |
+| **Branch Announcements** | Create/Send | Target branch users, teachers, or parents |
 
-### Registration Workflow
-1. **Student Registration**
-   - Register parent account
-   - Add child/student details
-   - Generate parent access token/code
-   - Parent uses token to activate mobile app
-   - Automatic child-parent linking in system
+### Student Enrollment Flow
+1. **Student Registration** (Principal/Admin with Student Management Access)
+   - Add student details and select package type
+   - System auto-generates: Registration fee + monthly invoices from enrollment month to year-end
+   - Parent receives access code via SMS/Email
+   - Parent sets up mobile account with automatic child linking
 
-### Dashboard Features
-- **Branch Attendance Summary** - Daily attendance overview
-- **Teacher Activity Overview** - Teacher engagement and productivity
-- **Fee Collection Status** - Outstanding payments and collection rates
-- **Recent Updates Feed** - Latest activities and communications
-- **Class Management Panel** - Quick access to class operations
+### Key Features
+- **Student Management** - Add students with auto-invoice generation (Registration + Monthly from enrollment to year-end)
+- **Admin Account Creation** - Create admin accounts with granular page permissions (Student, Teacher, Parent, Billing, Reports, Message Permission)
+- **Billing & Invoices** - Add additional items to invoices (no parent approval, no spending limits)
+- **Parent Communication** - Handle parent messages or delegate to admin with Message Permission
+- **Branch Announcements** - Send targeted announcements to branch teachers/parents
 
 ---
 
-## 👩‍🏫 5. Teacher (Mobile App)
+## 👩‍🏫 4. Teacher (Mobile App)
 
 ### Platform Access
 - **Primary:** Mobile Application (React Native)
@@ -179,20 +129,20 @@
 - **Access Level:** Assigned classes and students only
 
 ### Core Responsibilities
-- Daily attendance marking
-- Classroom updates and activity sharing
-- Student progress tracking
-- Parent communication
-- Educational content sharing
+- One-by-one photo attendance (mandatory for present students)
+- Text classroom updates with student tagging
+- Student progress tracking and grading
+- Reply to parent messages (no initiation)
+- Branch communication with principal/admin
 
 ### Key Permissions
 | Feature Category | Permissions | Details |
 |------------------|-------------|---------|
 | **Attendance** | Create/Edit | Mark attendance for assigned classes |
-| **Student Updates** | Create/Edit/Delete | Post classroom activities with media |
-| **Progress Tracking** | Create/Edit | Enter mid-term and final marks |
-| **Communication** | Create/Reply | Message parents and principals |
-| **Media Sharing** | Upload/Tag | Text updates with student tagging |
+| **Student Updates** | Create/Edit/Delete | Post text classroom activities (no photos) |
+| **Progress Tracking** | Create/Edit | Enter exam-tied grades (Midterm, Final, Assessment) |
+| **Communication** | Reply Only | Reply to parent messages, two-way with principal/admin |
+| **Text Posting** | Upload/Tag | Text updates with student tagging (no approval required) |
 
 ### Daily Workflow
 1. **Morning Setup (Home Tab)**
@@ -213,10 +163,10 @@
    - Save grades tied to exam and student
 
 ### Mobile Features (4 Bottom Tab Navigation)
-- **Home Tab** - Today's assigned classes overview
-- **Classroom Tab** - Select assigned classroom → Summary/Feed/Quick Actions
-- **Messages Tab** - Communication with parents and principal
-- **Profile Tab** - Account settings and information
+- **Home Tab** `/home` - Today's assigned classes overview (dashboard screen with cards)
+- **Classroom Tab** `/classroom` - Select assigned classroom → Summary/Feed/Quick Actions (multi-screen flow with floating action buttons)
+- **Messages Tab** `/messages` - Communication with parents and principal (chat interface with tabbed message center)
+- **Profile Tab** `/profile` - Account settings and information (settings screen)
 
 ### Key Teacher Restrictions
 - **Classroom Access:** Only admin-assigned classrooms visible
@@ -228,7 +178,7 @@
 
 ---
 
-## 👨‍👩‍👧‍👦 6. Parent
+## 👨‍👩‍👧‍👦 5. Parent
 
 ### Platform Access
 - **Primary:** Mobile Application (React Native)
@@ -237,18 +187,18 @@
 
 ### Core Responsibilities
 - Monitor child's attendance and progress
-- Communication with teachers and school
-- Fee payments and financial management
-- Event and announcement awareness
-- Profile maintenance
+- Communication with branch (Principal/Admin with Message Permission)
+- Billing notifications (25th) and Billplz payments
+- View child-specific classroom updates
+- Profile and linked children management
 
 ### Key Permissions
 | Feature Category | Permissions | Details |
 |------------------|-------------|---------|
 | **Child Monitoring** | Read-Only | View child's attendance, progress, activities |
-| **Communication** | Create/Reply | Message teachers and school administration |
-| **Payments** | Execute/View | Make payments, view payment history |
-| **Media Access** | View/Download | Child-tagged classroom updates |
+| **Communication** | Create/Reply | Message branch only (Principal/Admin replies, max 3 exchanges) |
+| **Payments** | Execute/View | Billplz payments, auto-notifications, payment history |
+| **Child Updates** | View/Upvote | Child-tagged text updates (no commenting) |
 | **Profile Management** | Edit | Update personal and child information |
 
 ### Account Activation Process
@@ -264,13 +214,11 @@
    - Sets up password and profile
    - Automatically sees linked children
 
-### Dashboard Features
-- **Child Attendance Status** - Today's attendance and weekly summary
-- **Latest Updates** - Recent text classroom activities
-- **Upcoming Events** - School calendar and important dates
-- **Payment Center** - Bills, payment gateway, transaction history
-- **Communication Center** - Messages from teachers and school
-- **Bill Management** - View invoices, pay via payment gateway
+### Dashboard Features (`/dashboard` - Card-Based Dashboard)
+- **Child Overview** - Swipeable cards for multiple children with attendance status, latest updates, child info
+- **Notifications Center** - Billing, announcements, messages with badges
+- **Payment Reminders** - Due dates, overdue alerts with amounts
+- **Announcements Card** - Principal/HQ announcements
 
 ---
 
@@ -298,17 +246,17 @@
 
 ## 📊 Permission Matrix Summary
 
-| Feature | Central Admin | Branch Principal | Financial Staff | Teachers (Web) | Teacher (Mobile) | Parent |
-|---------|---------------|------------------|-----------------|----------------|------------------|---------|
-| Branch Management | ✅ Full | ❌ None | ❌ None | ❌ None | ❌ None | ❌ None |
-| Student Records | ✅ All Branches | ✅ Own Branch | ❌ None | ✅ Assigned Classes | 👁 Assigned Classes | 👁 Own Children |
-| Teacher Management | ✅ All Branches | ✅ Own Branch | ❌ None | ❌ None | ❌ None | ❌ None |
-| Attendance | 👁 All | 👁 Branch | ❌ None | ✅ Classes + Photos | ✅ Classes + Photos | 👁 Child |
-| Communications | ✅ All | ✅ Branch | ❌ None | ✅ Parents/Principal | ✅ Parents/Principal | ✅ Teachers/School |
-| Financial Data | 👁 All | 👁 Branch | ✅ Branch Financial | ❌ None | ❌ None | ✅ Own Payments |
-| Bill Creation | ❌ None | ✅ Branch | ✅ Branch | ❌ None | ❌ None | ❌ None |
-| Payment Gateway | ❌ None | ✅ Branch | ✅ Branch | ❌ None | ❌ None | ✅ Own Payments |
-| Reports & Analytics | ✅ Network-wide | ✅ Branch-level | ✅ Financial Reports | 👁 Class-level | 👁 Class-level | 👁 Child-level |
+| Feature | Central Admin | Branch Principal | Teachers (Web) | Teacher (Mobile) | Parent |
+|---------|---------------|------------------|----------------|------------------|---------|
+| Branch Management | ✅ Create + Auto-Principal | ❌ None | ❌ None | ❌ None | ❌ None |
+| Student Records | ✅ All Branches | ✅ Own Branch | ✅ Assigned Classes | 👁 Assigned Classes | 👁 Own Children |
+| Teacher Management | ✅ All Branches | ✅ Own Branch | ❌ None | ❌ None | ❌ None |
+| Attendance | 👁 All | 👁 Branch | ✅ One-by-One Photos | ✅ One-by-One Photos | 👁 Child |
+| Communications | ✅ Network Announcements | ✅ Branch Announcements | ✅ Reply to Parents | ✅ Reply to Parents | ✅ Message Branch Only |
+| Billing & Invoices | 👁 All + Config | ✅ Branch + Additional Items | ❌ None | ❌ None | 👁 Own + Billplz |
+| Admin Account Creation | ✅ Network-wide | ✅ Branch + Permissions | ❌ None | ❌ None | ❌ None |
+| Message Permission | ✅ All | ✅ Handle Parents | ❌ None | ❌ None | ✅ Send to Branch |
+| Reports & Analytics | ✅ Network-wide + Audit | ✅ Branch-level | 👁 Class-level | 👁 Class-level | 👁 Child-level |
 
 **Legend:**
 - ✅ Full CRUD (Create, Read, Update, Delete)
@@ -317,5 +265,29 @@
 
 ---
 
-**Next Review:** User role validation with BrightHill stakeholders  
-**Implementation Notes:** Role permissions to be enforced at API level with frontend validation
+## 🔧 New Admin Account System
+
+### Configurable Admin Permissions (Created by Branch Principal)
+| Page Category | Permission Levels | Description |
+|---------------|------------------|-------------|
+| **Student Management** | View, Add, Edit | Access to student records and enrollment |
+| **Teacher Management** | View, Add, Edit, Assign Classes | Teacher accounts and class assignments |
+| **Parent Management** | View, Communication | Parent accounts and message handling |
+| **Billing Access** | View Invoices, Add Additional Items | Invoice management (no parent approval) |
+| **Reports Access** | Attendance, Billing, Performance | Various report generation |
+| **Message Permission** | Handle Parent Messages | Can receive and reply to parent messages |
+
+### Admin Account Rules
+- **Created by:** Branch Principal only
+- **Scope:** Branch-specific (cannot access other branches)
+- **Granular:** Page-category level permissions
+- **Message Handling:** Parent messages go to Principal OR Admin with Message Permission
+- **Flexibility:** Principal can create specialized roles (e.g., Billing Admin, Student Admin, etc.)
+
+---
+
+**Implementation Notes:** 
+- Role permissions enforced at API level with frontend validation
+- Admin accounts inherit branch restrictions
+- Message Permission required for parent communication handling
+- HQ auto-creates Principal accounts when creating branches

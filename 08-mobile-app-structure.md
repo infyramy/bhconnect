@@ -1,29 +1,10 @@
 # Mobile App Structure - BrightHill Connect
 
-**Purpose:** Planning document for 2-developer team  
-**Goal:** Simple, kid-friendly, fast to build mobile app  
-**Target:** Teachers & Parents daily use at BrightHill Preschool Network  
-**Context:** 700 students across branches, 12 students per class, Malaysian environment
+**Auto-Billing System, One-by-One Photo Attendance, HQ Configurable Packages**
 
----
-
-## Project Overview
-
-### Core Principles
-- **SIMPLE** - Minimal screens, clear navigation
-- **KID-FRIENDLY** - Bright colors, large buttons, easy to understand
-- **FAST TO BUILD** - Use standard components, avoid complex features
-- **MEETS REQUIREMENTS** - All essential features covered
-
-### BrightHill Context
-- **Network Size:** 700+ students across multiple branches in Malaysia
-- **Class Structure:** Maximum 12 students per class for optimal teacher-student ratio
-- **Fee Structure:** RM560 monthly fees, RM1280 registration fee
-- **Languages:** English with Malaysian context and terminology
-
-### Mobile App Users
-- **Teachers** - Daily attendance, post text updates, simple messaging
-- **Parents** - View child updates, make payments, communicate with teachers
+## 📱 Mobile App Users
+- **Teachers** - One-by-one photo attendance, text classroom updates
+- **Parents** - Auto-billing notifications, Billplz payments, child updates
 
 ---
 
@@ -78,20 +59,21 @@ Note: Teachers can reply to parents and send to principal/admin in same branch
 
 ### Detailed Classroom Flows
 
-#### Photo Attendance Flow (From Classroom Quick Action)
+#### One-by-One Photo Attendance Flow (From Classroom Quick Action)
 1. Teacher goes to **Classroom → Select Classroom → Quick Action: Attendance**
 2. **Current Day Attendance** for selected classroom (today's date)
-3. **Camera Interface Activation** - Automatic camera mode
-4. **Individual Student Photo Capture:**
-   - Take photo of each student individually
-   - Clear face visibility required
-   - Failed photos must be retaken
-5. **Mark Attendance with Photo** - Present/Absent with photo verification
-6. **Add Remarks** - Optional notes for absent students
-7. **Submit Attendance with Photos** - All photos uploaded to backend
-8. **Upload Confirmation** - Verify all photos submitted successfully
-9. **Past Records** - View/edit historical data
-10. **Edit Approval Required** - Past attendance edits need admin approval
+3. **Student List Display** - View all students in class
+4. **One-by-One Process:** For each student wanting to mark present:
+   - **Select Present** - Tap student name to mark present
+   - **Snap Photo** - Take individual photo of that student
+   - **Save Individual** - Photo saved with thumbnail and present mark
+5. **Absent Students** - Students not marked present (no photo needed)
+6. **Review Attendance** - See thumbnails for present students, absent list
+7. **Final Save** - Click save to send all photos to storage via API
+8. **API Upload** - All photos uploaded to backend storage
+9. **Success Confirmation** - All attendance and photos saved successfully
+10. **Past Records** - View/edit historical data
+11. **Edit Approval Required** - Past attendance edits need admin approval
 
 **Photo Requirements:**
 - **Mandatory Photos:** Cannot save attendance without individual student photos
@@ -130,22 +112,21 @@ Note: Teachers can reply to parents and send to principal/admin in same branch
 
 Note: Weekly calendar and media gallery removed - classroom specific updates only
 
-#### 3. PAYMENTS - Billplz Integration & Manual Upload
-**Purpose:** Payment management with Billplz and manual proof upload
-- **Outstanding Bills** (view unpaid invoices with details)
-- **Billplz Payment Integration** (pay online via Billplz - FPX, e-wallets, cards)
-- **Payment History** (complete transaction records)
-- **Payment Status Tracking** (Billplz confirmations and manual approvals)
-- **Manual Payment Upload** (upload bank transfer/cash payment proofs)
-- **Bill Details** (itemized invoices with fixed amounts)
-- **Staff Verification** (manual approval process for uploaded proofs)
+#### 3. PAYMENTS - Auto-Billing with Billplz Integration
+**Purpose:** Auto-billing notification and payment management
+- **Auto-Billing Notifications** (receive notifications on HQ configured date - 25th)
+- **Invoice Details** (view monthly fee + additional items in single invoice)
+- **Billplz Payment Integration** (immediate redirect to Billplz payment portal)
+- **Payment History** (complete automatic transaction records)
+- **Payment Status Tracking** (real-time Billplz confirmations)
+- **Automatic Receipts** (Billplz provides instant payment confirmations)
 
-**Payment Features:**
-- **Pay via Billplz** - redirected to secure Billplz payment portal
-- **Malaysian Payment Methods** - FPX, e-wallets, cards via Billplz
-- **Manual Payment Proof Upload** - for bank transfer/cash payments
-- **Payment Status Tracking** - monitor Billplz and manual payment approvals
-- **Fixed Amounts** - RM560 monthly, RM1280 registration
+**Auto-Billing Features:**
+- **Notification-Triggered Payment** - payments triggered by system notifications on 25th
+- **Combined Invoices** - monthly fee + additional items in single invoice
+- **Malaysian Payment Methods** - FPX, e-wallets, cards via Billplz only
+- **No Manual Uploads** - fully automated payment system
+- **Package-Based Amounts** - RM560 full day, RM400 half day, RM1280 registration
 
 #### 4. MESSAGES - Simple Messaging
 **Purpose:** Basic message system
@@ -183,26 +164,27 @@ Note: No family photo, only user-specific settings
    - "Mark Attendance" primary button (prominent)
    - Recent messages notification badge
 
-3. **Mark Attendance Flow**
-   - "Select Class" dropdown/picker
-   - Student grid view with names only
-   - For each student:
-     - Student name (clear, readable)
-     - Class and basic info
-     - Three status buttons: "Present" (green), "Absent" (red), "Late" (orange)
-     - Optional "Add Note" text field for absences
-   - "Save Attendance" button at bottom
-   - Confirmation toast: "Attendance saved for [Class Name]"
+3. **One-by-One Photo Attendance Flow**
+   - "Select Classroom" from admin-assigned classes
+   - Current day attendance for selected classroom
+   - **One-by-One Process:** For each student:
+     - Select student name to mark present
+     - Camera interface opens automatically
+     - Snap individual photo of that student
+     - Save with thumbnail and present mark
+   - **Absent Students:** Students not marked present (no photo needed)
+   - Review all thumbnails for present students + absent list
+   - "Final Save" sends all photos to API storage
 
 #### Classroom Updates Flow (3-5 minutes)
-4. **Classroom Updates Screen**
-   - "Take Photo" camera button (large, centered)
-   - "Write Caption" text area
+4. **Text Classroom Updates Screen**
+   - "Create Text Update" button
+   - "Write Caption" text area (no photos)
    - "Tag Students" section:
-     - List of student names
+     - List of student names from assigned classroom
      - Tap to select/deselect students
      - Selected students highlighted with checkmark
-   - "Post Update" button (disabled until students tagged)
+   - "Post Update" button (publishes immediately - no approval required)
    - Success message: "Update shared with [X] parents"
 
 ### Parent Daily Flow - Detailed Steps
@@ -216,46 +198,46 @@ Note: No family photo, only user-specific settings
 
 2. **My Child Screen**
    - Child profile header with name and basic info
-   - Tabs: "Attendance", "Photos", "Progress", "Growth"
-   - **Attendance Tab:** Calendar view with color-coded dates
-   - **Photos Tab:** Grid of all tagged photos with upvote buttons
-   - **Progress Tab:** Latest assessment reports
-   - **Growth Tab:** Height/weight tracking charts
+   - **Attendance History:** Simple list view (no calendar)
+   - **Classroom Updates:** Text-only updates tagged to this child
+     - View teacher posts about this child
+     - Upvote posts (no commenting allowed)
+   - **Progress Reports:** Assessment results from exams
+   - **Grades:** Midterm, Final assessment grades
 
-#### Payment Flow (When Due)
-3. **Payments Screen**
-   - "Outstanding Invoices" section at top
-   - Invoice card showing:
-     - Invoice number and date
-     - Amount: "RM560" (large, bold)
-     - Due date with countdown
-     - "Upload Receipt" button
-   - **Upload Receipt Flow:**
-     - Camera capture or photo library selection
-     - Preview uploaded image
-     - "Submit for Approval" button
-     - Status tracking: "Pending Approval" → "Approved"
+#### Auto-Billing Notification Flow (On 25th)
+3. **Auto-Billing Notification**
+   - Parent receives notification on HQ configured date (25th)
+   - Tap notification to view invoice details
+   - Invoice displays monthly fee + any additional items in single invoice
+   - **Billplz Payment Flow:**
+     - "Pay" button redirects to Billplz payment portal
+     - Select payment method (FPX, e-wallet, card)
+     - Complete payment via Billplz gateway
+     - Automatic payment confirmation and receipt
+     - Return to app with payment status updated
 
 ### Message Flow - Email Style
 
-#### Parent Initiating Message
+#### Parent Messaging Branch Flow
 1. **Messages Screen (Parent)**
-   - "Compose New Message" button at top
+   - "Send Message to Branch" button at top
    - **Compose Flow:**
-     - "To:" field pre-filled with child's teacher
+     - "To:" field shows "Branch" (not individual teacher)
      - "Subject:" required text field
      - "Message:" text area
-     - "Attach Photo" optional button
-     - "Send" button
+     - "Send to Branch" button
+     - Message goes to Principal OR Admin with Message Permission
 
-#### Teacher Reply Flow
-2. **Messages Screen (Teacher)**
-   - Inbox showing parent inquiries with unread badges
+#### Branch Reply Flow
+2. **Messages Screen (Branch Principal/Admin)**
+   - Inbox showing parent messages with unread badges
    - **Reply Flow:**
      - Original message thread display
      - "Reply" text area at bottom
      - Subject line automatically prefixed with "Re:"
      - "Send Reply" button
+     - **Thread Limit:** Maximum 3 exchanges per inquiry
 
 ### CRUD Operations Required
 
@@ -336,13 +318,13 @@ Note: No family photo, only user-specific settings
 
 ## 📋 Business Rules (Simple)
 
-### BrightHill Fee Structure (Real Data)
-- **Monthly fee:** RM560 per student (includes tuition and meals)
-- **Registration fee:** RM1280 one-time payment for new students
-- **Due date:** 5th of each month for monthly fees
-- **Payment method:** Bank transfer preferred, upload receipt photo for verification
-- **Late fee:** RM10 after 7 days grace period
-- **Class capacity:** Maximum 12 students per class
+### BrightHill Auto-Billing System
+- **HQ Configurable Packages:** Full day, half day, or any programme type with HQ configurable amounts
+- **Registration fee:** HQ configurable one-time payment
+- **Auto-Billing:** Notifications on HQ configured date (25th), overdue on 1st of next month
+- **Payment method:** Billplz integration only - FPX, e-wallets, cards
+- **Additional items:** No parent approval, no spending limits
+- **No manual uploads:** Fully automated payment system
 
 ### Assessment System
 - **Two assessments per year:** Mid-year (December) and Final (May)
@@ -357,12 +339,10 @@ Note: No family photo, only user-specific settings
 - **Classroom Feed:** Photo/text posts with upvote only (no comments)
 - **Professional tone:** Malaysian English, templates for common messages
 
-### Automated Reminder System
-- **Fee reminders:** 7 days, 3 days, 1 day before due date
-- **Overdue notices:** 1 day, 7 days after due date (with late fee warning)
+### Auto-Notification System
+- **Auto-billing notifications:** On HQ configured date (25th)
+- **Payment reminders:** Automatic notifications for unpaid invoices after due date
 - **Attendance alerts:** If child not marked present by 10 AM
-- **Assessment reminders:** 2 weeks before assessment periods
-- **Message notifications:** Push notification for new messages
 
 ---
 

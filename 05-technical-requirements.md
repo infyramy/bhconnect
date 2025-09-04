@@ -1,40 +1,10 @@
 # ⚙️ Technical Requirements - BrightHill Connect
 
-**Version:** 1.0  
-**Last Updated:** 2025-08-21  
+**Auto-Billing System, One-by-One Photo Attendance, Configurable Admin Accounts**
 
-## 🏗 System Architecture Overview
+## 🏗 System Architecture
 
-### High-Level Architecture
-```
-┌─────────────────┐    ┌─────────────────┐
-│   Web App       │    │   Mobile App    │
-│  (Vue/Nuxt)     │    │ (React Native)  │
-│                 │    │                 │
-│ Admin/Principal │    │ Teacher/Parent  │
-└─────────┬───────┘    └─────────┬───────┘
-          │                      │
-          └──────────┬───────────┘
-                     │
-          ┌─────────────────────┐
-          │   API Gateway       │
-          │  (Load Balancer)    │
-          └─────────┬───────────┘
-                    │
-          ┌─────────────────────┐
-          │   Backend Services  │
-          │    (Node.js/        │
-          │     Express)        │
-          └─────────┬───────────┘
-                    │
-    ┌───────────────┼───────────────┐
-    │               │               │
-┌───────────┐ ┌───────────┐ ┌───────────┐
-│ Database  │ │  Storage  │ │  External │
-│(PostgreSQL│ │  (Cloud)  │ │ Services  │
-│/MongoDB)  │ │           │ │           │
-└───────────┘ └───────────┘ └───────────┘
-```
+**Web App (Vue/Nuxt)** → **Mobile App (React Native)** → **Backend (Node.js/Express/TypeScript)** → **Database (MariaDB)**
 
 ---
 
@@ -128,17 +98,17 @@ src/
 // Technology Recommendations
 {
   "runtime": "Node.js 18+ LTS",
-  "framework": "Express.js 4.x / Fastify",
+  "framework": "Express.js 4.x ",
   "language": "TypeScript 4.9+",
   "authentication": "JWT + Refresh Tokens",
-  "validation": "Joi / Zod",
-  "orm": "Prisma / TypeORM",
-  "database": "PostgreSQL 14+ (Primary)",
+  "validation": "Zod",
+  "orm": "prisma",
+  "database": "MariaDB 10.11+ (Primary)",
   "cache": "Redis 6.x",
-  "fileStorage": "AWS S3 / Google Cloud Storage",
-  "email": "SendGrid / AWS SES",
+  "fileStorage": "DigitalOcean Spaces",
+  "email": "useplunk.com",
   "notifications": "Firebase Admin SDK",
-  "monitoring": "Winston + Morgan"
+  "monitoring": "Grafana + Prometheus"
 }
 ```
 
@@ -173,7 +143,7 @@ backend/
 
 ## 🗄 Database Design
 
-### Primary Database (PostgreSQL)
+### Primary Database (MariaDB)
 ```sql
 -- Core Tables Structure
 
@@ -182,7 +152,8 @@ CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'principal', 'financial_staff', 'teacher_web', 'teacher_mobile', 'parent')),
+    role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'principal', 'configurable_admin', 'teacher_web', 'teacher_mobile', 'parent')),
+    admin_permissions JSONB, -- for configurable_admin role: page permissions
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
@@ -242,7 +213,7 @@ CREATE TABLE classes (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Attendance table (enhanced with photo support)
+-- Attendance table (one-by-one photo support)
 CREATE TABLE attendance (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     student_id UUID NOT NULL REFERENCES students(id),
@@ -252,9 +223,10 @@ CREATE TABLE attendance (
     status VARCHAR(20) NOT NULL CHECK (status IN ('present', 'absent', 'late')),
     check_in_time TIME,
     check_out_time TIME,
-    photo_url TEXT, -- student photo for attendance verification
+    photo_url TEXT, -- individual student photo for attendance verification
     photo_uploaded BOOLEAN DEFAULT FALSE,
     photo_upload_status VARCHAR(20) DEFAULT 'pending', -- pending, uploaded, failed
+    photo_thumbnail_url TEXT, -- thumbnail for quick review
     remarks TEXT,
     edit_requested BOOLEAN DEFAULT FALSE,
     edit_reason TEXT,
@@ -265,75 +237,109 @@ CREATE TABLE attendance (
     UNIQUE(student_id, date)
 );
 
--- Student Bills (new billing system)
+-- Auto-Generated Student Bills
 CREATE TABLE student_bills (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     student_id UUID NOT NULL REFERENCES students(id),
     parent_id UUID NOT NULL REFERENCES users(id),
-    created_by UUID NOT NULL REFERENCES users(id), -- financial staff or principal
+    auto_generated BOOLEAN DEFAULT TRUE, -- automatically generated by system
     bill_number VARCHAR(50) UNIQUE NOT NULL,
     billing_month VARCHAR(7) NOT NULL, -- YYYY-MM format
+    invoice_type VARCHAR(20) NOT NULL CHECK (invoice_type IN ('registration', 'monthly', 'additional')),
+    package_type VARCHAR(20) CHECK (package_type IN ('full_day', 'half_day')),
     line_items JSONB NOT NULL, -- array of {description, amount, quantity}
     total_amount DECIMAL(10,2) NOT NULL,
-    due_date DATE NOT NULL,
-    status VARCHAR(20) DEFAULT 'unpaid' CHECK (status IN ('unpaid', 'paid', 'overdue', 'cancelled')),
+    notification_date DATE NOT NULL, -- HQ configured notification date (25th)
+    due_date DATE NOT NULL, -- configurable overdue date (1st of next month)
+    status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'notified', 'paid', 'overdue', 'cancelled')),
+    additional_items_added BOOLEAN DEFAULT FALSE,
+    late_enrollment BOOLEAN DEFAULT FALSE,
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Payments table (Billplz integration)
+-- Auto-Billing Payments (Billplz only)
 CREATE TABLE payments (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     bill_id UUID NOT NULL REFERENCES student_bills(id),
     parent_id UUID NOT NULL REFERENCES users(id),
     amount DECIMAL(10,2) NOT NULL,
-    payment_method VARCHAR(50) NOT NULL, -- billplz, bank_transfer, cash, upload_proof
-    billplz_bill_id VARCHAR(255), -- Billplz bill ID
+    payment_method VARCHAR(50) DEFAULT 'billplz', -- auto-billing via Billplz only
+    billplz_bill_id VARCHAR(255) NOT NULL, -- Billplz bill ID
     billplz_transaction_id VARCHAR(255), -- Billplz transaction ID
     billplz_status VARCHAR(50), -- paid, failed, pending, cancelled
     billplz_url TEXT, -- Billplz payment URL
-    manual_verification_required BOOLEAN DEFAULT FALSE,
-    verification_status VARCHAR(20) DEFAULT 'pending', -- pending, approved, rejected
-    verified_by UUID REFERENCES users(id),
-    verified_at TIMESTAMP,
-    receipt_url TEXT, -- for manual payment proofs upload
-    billplz_receipt_url TEXT, -- for Billplz receipts
+    billplz_receipt_url TEXT, -- Billplz automatic receipts
     paid_date TIMESTAMP,
     status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'completed', 'failed', 'refunded')),
     failure_reason TEXT,
+    notification_sent_date TIMESTAMP, -- when parent was notified
+    auto_processed BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Messages table
+-- Messages table (Updated for Branch Communication)
 CREATE TABLE messages (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     sender_id UUID NOT NULL REFERENCES users(id),
-    recipient_id UUID NOT NULL REFERENCES users(id),
-    subject VARCHAR(255),
+    recipient_id UUID NOT NULL REFERENCES users(id), -- branch (principal/admin with message permission)
+    branch_id UUID NOT NULL REFERENCES branches(id), -- all messages are branch-specific
+    subject VARCHAR(255) NOT NULL, -- subject required for parent messages
     content TEXT NOT NULL,
-    message_type VARCHAR(20) DEFAULT 'direct',
-    thread_id UUID,
+    message_type VARCHAR(20) DEFAULT 'parent_to_branch',
+    thread_id UUID, -- for threading (max 3 exchanges)
+    thread_count INTEGER DEFAULT 1, -- track exchange count
     attachments JSONB,
     read_at TIMESTAMP,
+    replied_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Announcements table
+-- Announcements table (Updated for HQ/Branch Targeting)
 CREATE TABLE announcements (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     author_id UUID NOT NULL REFERENCES users(id),
-    target_audience VARCHAR(20) NOT NULL,
-    branch_ids UUID[],
-    class_ids UUID[],
+    author_type VARCHAR(20) NOT NULL CHECK (author_type IN ('hq', 'branch')), -- who created
+    target_audience VARCHAR(50) NOT NULL, -- 'all_network', 'all_teachers', 'all_parents', 'specific_branch', 'branch_users', 'branch_teachers', 'branch_parents'
+    branch_ids UUID[], -- for targeting specific branches
     media_urls TEXT[],
     priority VARCHAR(20) DEFAULT 'normal',
     published_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Configurable Admin Accounts (Enhanced)
+CREATE TABLE admin_accounts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id),
+    created_by UUID NOT NULL REFERENCES users(id), -- Branch Principal who created this
+    branch_id UUID NOT NULL REFERENCES branches(id), -- branch-specific only
+    page_permissions JSONB NOT NULL, -- {"student_management": true, "teacher_management": false, etc}
+    message_permission BOOLEAN DEFAULT FALSE, -- can handle parent messages
+    account_description VARCHAR(255), -- "Student Admin", "Billing Admin", etc
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Auto-Billing Configuration
+CREATE TABLE billing_config (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    branch_id UUID REFERENCES branches(id), -- null for HQ global config
+    notification_day INTEGER NOT NULL DEFAULT 25, -- day of month for notifications
+    due_day INTEGER NOT NULL DEFAULT 1, -- day of next month for overdue
+    full_day_amount DECIMAL(10,2) NOT NULL DEFAULT 560.00,
+    half_day_amount DECIMAL(10,2) NOT NULL DEFAULT 400.00,
+    registration_amount DECIMAL(10,2) NOT NULL DEFAULT 1280.00,
+    auto_billing_enabled BOOLEAN DEFAULT TRUE,
+    late_enrollment_prorating BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
@@ -349,13 +355,15 @@ CREATE INDEX idx_attendance_date_status ON attendance(date, status);
 CREATE INDEX idx_attendance_photo_status ON attendance(photo_upload_status);
 CREATE INDEX idx_attendance_edit_requested ON attendance(edit_requested);
 
--- Billing System Indexes
+-- Auto-Billing System Indexes
 CREATE INDEX idx_bills_student ON student_bills(student_id);
 CREATE INDEX idx_bills_parent ON student_bills(parent_id);
-CREATE INDEX idx_bills_created_by ON student_bills(created_by);
+CREATE INDEX idx_bills_auto_generated ON student_bills(auto_generated);
 CREATE INDEX idx_bills_status ON student_bills(status);
 CREATE INDEX idx_bills_due_date ON student_bills(due_date);
 CREATE INDEX idx_bills_billing_month ON student_bills(billing_month);
+CREATE INDEX idx_bills_invoice_type ON student_bills(invoice_type);
+CREATE INDEX idx_bills_notification_date ON student_bills(notification_date);
 
 -- Payment System Indexes
 CREATE INDEX idx_payments_bill ON payments(bill_id);
@@ -415,23 +423,29 @@ PUT    /attendance/approve-edit // Approve/reject attendance edit
 GET    /attendance/summary      // Attendance statistics
 GET    /attendance/reports      // Generate reports
 
-// Advanced Billing System
-GET    /bills                   // List student bills
-POST   /bills                   // Create new student bill
-GET    /bills/:id               // Get bill details
-PUT    /bills/:id               // Update bill
-DELETE /bills/:id               // Cancel bill
-POST   /bills/bulk              // Create bills for multiple students
-GET    /bills/student/:id       // Get bills for specific student
+// Auto-Billing System
+GET    /auto-billing/bills              // List auto-generated bills
+POST   /auto-billing/generate           // Trigger auto-bill generation for student
+GET    /auto-billing/bills/:id          // Get auto-bill details
+PUT    /auto-billing/add-items/:id      // Add items to existing monthly bill
+GET    /auto-billing/student/:id        // Get all bills for specific student
+POST   /auto-billing/notify             // Send notifications on configured date
+GET    /auto-billing/config             // Get billing configuration
+PUT    /auto-billing/config             // Update billing configuration
 
-// Manual Payment Management (Billplz Integration)
+// Auto-Payment Management (Billplz Only)
 GET    /payments                // List payments
-POST   /payments/billplz        // Create Billplz payment URL
+POST   /payments/billplz        // Create Billplz payment URL (auto-triggered)
 GET    /payments/:id            // Get payment details
-PUT    /payments/:id            // Update payment status manually
-POST   /payments/verify         // Verify manual payment proof upload
 GET    /payments/history        // Payment history
-GET    /payments/receipts/:id   // Download payment receipt
+GET    /payments/receipts/:id   // Download Billplz receipt
+
+// Admin Account Management
+GET    /admin-accounts          // List branch admin accounts
+POST   /admin-accounts          // Create admin account with page permissions
+GET    /admin-accounts/:id      // Get admin account details
+PUT    /admin-accounts/:id      // Update admin permissions
+DELETE /admin-accounts/:id      // Deactivate admin account
 
 // Billplz Integration
 POST   /billplz/webhook         // Handle Billplz webhooks
@@ -439,12 +453,15 @@ POST   /billplz/create          // Create Billplz bill
 GET    /billplz/status/:id      // Get Billplz payment status
 GET    /billplz/transactions    // List Billplz transactions
 
-// Communication
-GET    /messages                // Get messages
-POST   /messages                // Send message
+// Communication (Updated)
+GET    /messages                // Get branch messages
+POST   /messages/branch         // Send message to branch
 PUT    /messages/:id/read       // Mark as read
-GET    /announcements           // Get announcements
-POST   /announcements           // Create announcement
+GET    /messages/thread/:id     // Get message thread (max 3 exchanges)
+GET    /announcements           // Get announcements (HQ/Branch)
+POST   /announcements/hq        // Create HQ announcement
+POST   /announcements/branch    // Create branch announcement
+GET    /announcements/history   // Get announcement history
 
 // File Upload
 POST   /upload/avatar           // Upload profile picture
@@ -586,22 +603,27 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
     depends_on:
-      - postgres
+      - mariadb
       - redis
 
-  postgres:
-    image: postgres:14-alpine
+  mariadb:
+    image: mariadb:10.11
     environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - MARIADB_DATABASE=${DB_NAME}
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mariadb_data:/var/lib/mysql
 
   redis:
     image: redis:6-alpine
     volumes:
       - redis_data:/data
+
+volumes:
+  mariadb_data:
+  redis_data:
 ```
 
 ### Cloud Infrastructure (AWS/GCP)
@@ -611,7 +633,7 @@ const infrastructure = {
   compute: {
     web: "AWS ECS / Google Cloud Run",
     backend: "AWS ECS / Google Cloud Run",
-    database: "AWS RDS PostgreSQL / Google Cloud SQL"
+    database: "AWS RDS MariaDB / Google Cloud SQL MariaDB"
   },
   storage: {
     files: "AWS S3 / Google Cloud Storage",

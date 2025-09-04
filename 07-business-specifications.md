@@ -8,23 +8,24 @@
 
 ## 💰 Simple Fee Structure
 
-### Monthly Fees (Keep it Simple)
-- **Monthly Fee:** RM560 per student (includes tuition and meals)
-- **Registration Fee:** RM1280 one-time payment for new students
-- **Due Date:** 5th of every month
-- **Late Fee:** RM10 after 7 days grace period
+### Package Fees (HQ Configurable)
+- **Programme Packages:** HQ configurable amounts for any programme type (Full Day, Half Day, etc.)
+- **Registration Fee:** HQ configurable one-time payment for new students (immediate)
+- **Notification Date:** 25th of every month (HQ configurable)
+- **Due Date:** 1st of next month (overdue after this date, HQ configurable)
+- **Auto-Reminders:** Automatic notifications sent to parents after due date for unpaid invoices
 
-### Payment Rules
-- **Method:** Bank transfer or cash payment at school
-- **Proof Required:** Parents upload receipt photo
-- **Approval:** Principal manually approves payments
-- **New Students:** Pro-rate fees based on enrollment date
+### Auto-Billing Rules
+- **Method:** Automatic Billplz payment gateway only
+- **No Manual Payments:** All payments processed through Billplz automatically
+- **Parent Notification:** Auto-notification on HQ configured date (25th)
+- **Late Enrollment:** Pro-rate fees based on enrollment month (March enrollment = March-December invoices only)
 
 ### Implementation Notes
-- Start with **fixed amounts** - don't build complex configuration
-- **Single due date** for all fees - 5th of month
-- **Manual approval process** - no automatic payment processing
-- Add **family discounts later** if needed (Phase 2)
+- **HQ Configurable** - notification and due dates can be configured by HQ
+- **Auto-generated invoices** - system creates invoices automatically during student enrollment
+- **No manual processes** - fully automated billing and payment system
+- **Additional items** - edit existing monthly invoices, never create separate invoices
 
 ---
 
@@ -92,16 +93,32 @@
 
 ---
 
-## 🧾 Simple Invoicing System (No Payment Gateway)
+## 🧾 Auto-Billing Invoicing System with Billplz Integration
 
-### Invoice Generation Flow
+### Auto-Invoice Generation Flow
 ```javascript
-// Simple Invoice System
+// Auto-Billing Invoice System
 {
   invoiceGeneration: {
-    schedule: "monthly", // auto-generate on 1st of month
-    dueDate: 5, // 5th of each month
-    method: "automatic",
+    trigger: "student_enrollment", // auto-generate during enrollment
+    schedule: "immediate_and_monthly", // registration fee immediate, monthly auto-generated
+    notificationDate: 25, // HQ configurable notification date
+    dueDate: 1, // 1st of next month (HQ configurable)
+    method: "fully_automatic",
+    
+    // Student Enrollment Auto-Invoice
+    enrollmentInvoices: {
+      registrationFee: {
+        amount: 1280.00,
+        timing: "immediate", // charged when student added
+        description: "Registration Fee - {STUDENT_NAME}"
+      },
+      monthlyInvoices: {
+        amount: "package_dependent", // 560 full day, 400 half day
+        timing: "enrollment_month_to_year_end", // March enrollment = March-Dec
+        description: "Monthly Tuition - {MONTH} {YEAR}"
+      }
+    },
     
     // Invoice Structure
     template: {
@@ -109,42 +126,48 @@
         branchInfo: true,
         invoiceNumber: "auto_generated", // format: BH-{BRANCH}-{YEAR}-{MONTH}-{STUDENT_ID}
         issueDate: "auto",
-        dueDate: "configurable"
+        notificationDate: "hq_configured", // 25th
+        dueDate: "hq_configured" // 1st of next month
       },
       
       items: [
         {
           description: "Monthly Tuition - {MONTH} {YEAR}",
-          amount: "from_fee_structure",
+          amount: "package_based", // Full/Half day
           quantity: 1
+        },
+        {
+          description: "Additional Items (if any)",
+          amount: "variable",
+          addedBeforeDue: true // only if added before 25th
         }
       ],
       
       footer: {
-        paymentInstructions: "configurable_per_branch",
-        bankDetails: "optional",
+        billplzIntegration: true,
+        paymentInstructions: "Click Pay button to redirect to Billplz",
         contactInfo: true
       }
     }
   },
   
-  // Payment Proof System
-  paymentProof: {
+  // Billplz Integration System
+  billplzIntegration: {
     enabled: true,
-    allowedFormats: ["jpg", "png", "pdf"],
-    maxFileSize: "5MB",
-    requireApproval: true,
-    approvalWorkflow: "principal_approval"
+    autoProcessing: true,
+    paymentMethods: ["fpx", "ewallet", "card"],
+    immediateConfirmation: true,
+    automaticReceipts: true
   }
 }
 ```
 
-### Invoice Management Features
-- **Auto-Generation:** Monthly invoices created automatically
-- **Proof Upload:** Parents can upload payment receipts
-- **Manual Verification:** Principal approves payment proofs
-- **Payment Tracking:** Simple paid/unpaid status tracking
-- **Custom Instructions:** Branch-specific payment instructions
+### Auto-Billing Management Features
+- **Auto-Generation:** Invoices created automatically during student enrollment
+- **Billplz Integration:** Direct payment gateway integration with immediate processing
+- **Additional Items:** Edit existing monthly invoices (never create separate invoices)
+- **Late Enrollment:** Pro-rated billing from enrollment month to year-end
+- **HQ Configuration:** Configurable notification and due dates
 
 ---
 
@@ -166,19 +189,19 @@
       {
         type: "daily_activity",
         requiresTags: true,
-        allowMedia: true,
+        allowMedia: false, // text only
         visibility: "tagged_parents_only"
       },
       {
         type: "achievement",
         requiresTags: true,
-        allowMedia: true,
+        allowMedia: false, // text only
         visibility: "tagged_parents_only"
       },
       {
         type: "learning_moment",
         requiresTags: true,
-        allowMedia: true,
+        allowMedia: false, // text only
         visibility: "tagged_parents_only"
       }
     ]
@@ -221,30 +244,24 @@
     
     messageTypes: [
       {
-        type: "teacher_to_parent",
+        type: "parent_to_branch",
         subject_required: true,
-        attachments_allowed: true,
-        read_receipts: true
+        attachments_allowed: false,
+        initiation_allowed: true,
+        max_exchanges: 3
       },
       {
-        type: "principal_to_parent",
+        type: "branch_to_parent",
         subject_required: true,
-        priority_levels: ["normal", "important", "urgent"],
-        attachments_allowed: true
+        attachments_allowed: false,
+        reply_only: true,
+        handler: "principal_or_admin_with_message_permission"
       },
       {
-        type: "parent_to_teacher",
+        type: "teacher_to_branch",
         subject_required: true,
-        attachments_allowed: true,
-        auto_forward_to_principal: false,
-        initiation_allowed: true
-      },
-      {
-        type: "teacher_to_parent", 
-        subject_required: true,
-        attachments_allowed: true,
-        initiation_allowed: false,
-        reply_only: true
+        attachments_allowed: false,
+        two_way_communication: true
       }
     ]
   },
@@ -264,13 +281,15 @@
 }
 ```
 
-### BrightHill Messaging Features
-- **Familiar Interface:** Like email - subject lines, threading, folders
+### BrightHill Messaging Features (Updated)
+- **Parent-Branch Communication:** Parents message branch only (not individual teachers)
+- **Message Handling:** Principal OR Admin with Message Permission handles parent messages
 - **No Real-Time:** Avoids WebSocket complexity, uses pull-to-refresh
-- **Professional:** Formal communication structure suitable for school environment
-- **Simple Messaging:** Basic text messaging only (no attachments except payment receipts)
-- **Message Limits:** Parent-principal max 3 reply exchanges per inquiry
-- **Direction Control:** Parents initiate inquiries, teachers reply only
+- **Professional:** Email-style structure with subject lines and threading
+- **Simple Messaging:** Basic text messaging only (no attachments)
+- **Message Limits:** Maximum 3 exchanges per parent inquiry thread
+- **Teacher Communication:** Teachers can reply to parents, two-way with branch
+- **Text-Only Feed:** Classroom updates limited to text descriptions (no photos)
 - **Malaysian English:** Support for local terminology and context
 
 ---

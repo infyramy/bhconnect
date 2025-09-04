@@ -27,21 +27,21 @@
 ## 👤 User Profile Management
 
 ### Profile Features
-| Feature | Central Admin | Branch Principal | Teacher | Parent |
+| Feature | Central Admin | Branch Principal | Configurable Admin | Teacher | Parent |
 |---------|---------------|------------------|---------|---------|
-| **Profile View** | ✅ | ✅ | ✅ | ✅ |
-| **Avatar Upload** | ✅ | ✅ | ✅ | ✅ |
-| **Contact Info Edit** | ✅ | ✅ | ✅ | ✅ |
-| **Notification Settings** | ✅ | ✅ | ✅ | ✅ |
-| **Language Settings** | ✅ | ✅ | ✅ | ✅ |
-| **Theme Mode** | ❌ | ❌ | ❌ | ❌ |
-| **Role Information** | 👁 | 👁 | 👁 | 👁 |
+| **Profile View** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Avatar Upload** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Contact Info Edit** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Notification Settings** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Language Settings** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Theme Mode** | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Role Information** | 👁 | 👁 | 👁 | 👁 | 👁 |
 
 ### Profile Data Structure
 ```javascript
 {
   userId: "unique_id",
-  role: "admin|principal|teacher|parent",
+  role: "admin|principal|configurable_admin|teacher|parent",
   personalInfo: {
     firstName: "string",
     lastName: "string",
@@ -247,25 +247,34 @@
 - **Historical Records:** Complete academic journey tracking
 
 #### Branch Principal Level
-- **Student Registration:** New student enrollment with parent account creation
-- **Class Assignment:** Assign/reassign students to appropriate classes
-- **Student Profiles:** Detailed view with academic and personal information
-- **Parent Linking:** Generate and manage parent access tokens
+- **Student Enrollment:** Auto-generates registration + monthly invoices from enrollment month to year-end
+- **Additional Items:** Add to existing invoices without parent approval, no spending limits
+- **Class Assignment:** Assign students to classes
+- **Admin Account Creation:** Create configurable admin accounts with page-level permissions
+- **Parent Communication:** Handle parent messages or delegate to admin with Message Permission
+
+#### Configurable Admin Level (Created by Principal)
+- **Permission-Based Access:** Access based on assigned page categories
+- **Student Management:** If granted - View, Add, Edit students in branch
+- **Teacher Management:** If granted - View, Add, Edit teachers, assign classes
+- **Parent Management:** If granted - View parent accounts, handle communications
+- **Billing Access:** If granted - View invoices, add additional items
+- **Message Permission:** If granted - Handle parent messages and replies
+- **Reports Access:** If granted - Generate attendance, billing, performance reports
 
 #### Teacher Level (Web & Mobile)
-- **Class Student Lists:** View assigned students with names (no photos)
-- **Photo Attendance System:** Mark attendance with mandatory student photos
-- **Attendance Tracking:** Mark present/absent with photo verification
-- **Progress Notes:** Add observations and developmental notes
-- **Parent Communication:** Direct messaging about student progress
+- **Class Student Lists:** View assigned students only (admin-assigned classes)
+- **One-by-One Photo Attendance:** Mandatory photos for present students, no alternatives
+- **Attendance Restrictions:** Edit past records requires admin approval
+- **Text Classroom Updates:** Post text updates with student tagging (no approval required)
+- **Parent Communication:** Reply only (cannot initiate), messages handled by branch
 
-### Photo Attendance System
-#### Photo Capture Requirements
-- **Individual Student Photos:** One photo per student during attendance
-- **Clear Face Visibility:** Ensure student face is clearly visible
-- **Photo Quality Standards:** Minimum resolution for identification
-- **Failed Upload Retry:** Re-take photos if upload fails
-- **Mandatory Requirement:** Cannot save attendance without photos
+### One-by-One Photo Attendance System
+#### Photo Requirements
+- **Photo Mandatory:** Required for all present students
+- **No Backup Methods:** Clear photo required, no alternatives
+- **One-by-One Process:** Select present → snap photo → save with thumbnail
+- **Mandatory for Present Students Only:** Absent students do not require photos
 
 #### Photo Storage & Management
 - **Backend Storage:** All photos uploaded to secure cloud storage
@@ -284,10 +293,12 @@
 7. **Confirmation of successful submission**
 
 #### Parent Level
-- **Child Profile View:** Comprehensive view of child's information (no photos)
-- **Attendance History:** Historical attendance records with patterns
+- **Child Profile View:** View child's information and progress
+- **Attendance History:** Simple list view of attendance records
 - **Academic Progress:** Grades, assessments, and development milestones
-- **Tagged Updates:** Text classroom posts tagged to their child
+- **Child-Specific Updates:** Text classroom posts tagged to their child only
+- **Communication:** Send messages to branch only (Principal/Admin with Message Permission replies)
+- **Billing Notifications:** Receive auto-notifications on 25th, pay via Billplz
 
 ---
 
@@ -347,26 +358,24 @@
 
 ### Communication Features
 
-#### Email-Style Messaging (No WebSocket)
-- **Professional Structure:** Subject lines, threading, folders (Inbox/Sent/Important)
-- **Pull-to-Refresh:** Manual refresh instead of real-time updates
-- **Thread Management:** Group related messages together
-- **Attachment Support:** Photos, documents, voice notes
-- **Read Receipts:** Know when messages are opened
-- **Search Function:** Find messages by sender, subject, or content
+#### Parent-Branch Communication (Updated Flow)
+- **Parent Messages:** Parents can only message branch (not individual teachers)
+- **Message Handling:** Branch Principal OR Admin with Message Permission handles replies
+- **Message Threading:** Maximum 3 exchanges per inquiry
+- **Email-Style Structure:** Subject lines required, no real-time chat
+- **Pull-to-Refresh:** Manual refresh, no WebSocket complexity
 
-#### Child-Specific Feed System
-- **Tagged Posts Only:** Parents see only posts tagged with their child
-- **Teacher Posting:** Must tag specific students in classroom updates
-- **No Class-Wide Posts:** All posts are child-specific
-- **Media-Rich:** Encourage photos/videos of daily activities
-- **Personal Touch:** Each update feels personal to the parent
+#### Teacher Communication
+- **Classroom Feed:** Text-only updates with student tagging (no approval required)
+- **Parent Reply:** Teachers can only reply to parent messages (cannot initiate)
+- **Branch Communication:** Two-way messaging with Principal/Admin
+- **Child-Specific Posts:** Parents see only posts tagged with their child
 
 #### Announcement System
-- **Target Audience Selection:** All users, specific branches, classes, or roles
-- **Rich Content:** Text, images, videos, documents
-- **Schedule Publishing:** Immediate or scheduled announcements
-- **Read Receipts:** Track who has viewed announcements
+- **HQ Announcements:** Target All Network, All Teachers, All Parents, or Specific Branch
+- **Branch Announcements:** Target All Branch Users, Branch Teachers, or Branch Parents
+- **Push Notifications:** Real-time delivery to mobile apps
+- **Announcement History:** Track sent announcements and read receipts
 
 #### Notification System
 - **Push Notifications:** Real-time mobile alerts
@@ -376,62 +385,55 @@
 
 ---
 
-## 💰 Manual Billing & Billplz Payment System
+## 💰 Auto-Billing & Billplz Payment System
 
-### Payment Features
-| Feature | Central Admin | Branch Principal | Financial Staff | Teachers (Web) | Teacher (Mobile) | Parent |
-|---------|---------------|------------------|-----------------|----------------|------------------|---------|
-| **View All Payments** | ✅ Network | ✅ Branch | ✅ Branch | ❌ | ❌ | 👁 Own |
-| **Create Student Bills** | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| **Manual Invoice Generation** | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| **Billplz Payment Processing** | ❌ | ✅ | ✅ | ❌ | ❌ | ✅ |
-| **Upload Payment Proof** | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| **Approve Payment Proof** | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| **Payment Reports** | ✅ Network | ✅ Branch | ✅ Branch | ❌ | ❌ | 👁 Own |
+### Billing & Invoice Features
+| Feature | Central Admin | Branch Principal | Configurable Admin | Teachers | Parent |
+|---------|---------------|------------------|-------------------|----------|--------|
+| **View All Payments** | ✅ Network | ✅ Branch | 👁 Branch (if Billing Access) | ❌ | 👁 Own |
+| **Create Student Bills** | ✅ | ✅ | ✅ (if Billing Access) | ❌ | ❌ |
+| **Auto-Invoice Generation** | ✅ Config | ✅ Trigger | ✅ (if Billing Access) | ❌ | ❌ |
+| **Additional Items** | ✅ | ✅ | ✅ (if Billing Access) | ❌ | ❌ |
+| **Billplz Payment** | ❌ | ❌ | ❌ | ❌ | ✅ Execute |
+| **Invoice Notifications** | 👁 All | 👁 Branch | 👁 Branch | ❌ | ✅ Receive |
+| **Payment Reports** | ✅ Network + Audit | ✅ Branch | 👁 Branch (if Reports Access) | ❌ | 👁 Own |
 
 ### Fixed Fee Structure
 ```javascript
-// Fixed Fee Amounts (No Configuration)
+// Fixed Fee Amounts (HQ Configurable)
 {
-  tuition: { amount: 560.00, frequency: "monthly" },
+  tuition_full_day: { amount: 560.00, frequency: "monthly" },
+  tuition_half_day: { amount: 400.00, frequency: "monthly" },
   registration: { amount: 1280.00, frequency: "one_time" },
-  activities: { amount: 50.00, frequency: "optional" },
-  meals: { amount: "included_in_tuition" }
+  additional_items: { variable_amount: true, frequency: "as_needed" }
 }
 ```
 
-### Manual Billing & Billplz Payment Flow
-1. **Manual Bill Creation System**
-   - **Financial Staff/Principal:** Manually create student bills
-   - **Select Student:** Choose individual student for billing
-   - **Add Line Items:** Fixed amounts - RM560 tuition, RM1280 registration
-   - **Generate Invoice:** Manually create invoice
-   - **Parent Notification:** Send notification to mobile app
+### Auto-Billing System Implementation
+1. **HQ Configurable Packages**
+   - All programme types (Full Day, Half Day, etc.) with configurable amounts
+   - HQ sets notification date (25th) and due dates (1st)
+   
+2. **Auto-Invoice Generation**
+   - Enrollment generates registration + monthly invoices from enrollment month to year-end
+   - Additional items added without parent approval, no spending limits
+   
+3. **Auto-Notifications**
+   - System sends notifications to parents for unpaid invoices after due date
+   - All billing activities logged for HQ review
 
-2. **Billplz Payment Integration**
-   - **Mobile App Integration:** Parents redirected to Billplz
-   - **Malaysian Payment Methods:** FPX, e-wallets, cards via Billplz
-   - **Backend Integration:** Mobile → Backend → Billplz
-   - **Payment Confirmation:** Return from Billplz with status
-   - **Receipt Generation:** Billplz provides payment receipts
-
-3. **Dual Payment Options**
-   - **Billplz Online:** Secure payment via Billplz gateway
-   - **Manual Upload:** Bank transfer/cash with uploaded proof
-   - **Staff Verification:** Manual approval of payment proofs
-   - **Status Tracking:** Manual payment status monitoring
-
-4. **Manual Payment Tracking**
-   - **Manual Updates:** Staff manually update payment status
-   - **Proof Verification:** Staff approval for uploaded receipts
-   - **Payment History:** Transaction records maintained
-   - **No Automated Flow:** All processes require manual intervention
+### Billplz Payment Integration
+- **Malaysian Payment Methods:** FPX, e-wallets, cards via Billplz
+- **Immediate Processing:** No manual verification required
+- **Payment Confirmation:** Real-time status updates from Billplz
+- **Receipt Generation:** Billplz provides automatic payment receipts
+- **Status Tracking:** Automatic payment status monitoring
 
 ### Financial Reporting
 - **Revenue Analytics:** Branch and network-wide revenue tracking
-- **Collection Rates:** Payment efficiency metrics
-- **Outstanding Balances:** Overdue accounts management
-- **Financial Forecasting:** Revenue projections based on enrollment
+- **Collection Rates:** Payment efficiency metrics with auto-billing insights
+- **Outstanding Balances:** Automated overdue accounts management
+- **Financial Forecasting:** Revenue projections based on enrollment and auto-billing patterns
 
 ---
 

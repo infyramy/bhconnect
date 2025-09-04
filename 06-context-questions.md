@@ -1,12 +1,8 @@
 # ❓ Context Questions - BrightHill Connect
 
-**Version:** 1.0  
-**Last Updated:** 2025-08-21  
-**Purpose:** Structured questions to gather detailed requirements and clarifications
+**Final System Requirements Implemented - Questions Updated**
 
----
-
-## 🎯 Project Context Questions
+## 🎯 Implementation Questions
 
 ### 1. Business & Operational Questions
 
@@ -44,10 +40,10 @@
 - **A7:** How do you currently handle staff transfers between branches?
 
 ### Branch Principal Questions
-- **P1:** How many students do you typically enroll per month?
-- **P2:** What is your current process for registering new students?
-- **P3:** How do you currently handle parent-teacher communication?
-- **P4:** What reports do you need to send to HQ regularly?
+- **P1:** How will auto-billing work with different enrollment months?
+- **P2:** What additional items need to be added to invoices without parent approval?
+- **P3:** How should audit logs be formatted for HQ review?
+- **P4:** What HQ configurable package amounts are needed?
 - **P5:** How do you track and manage fee collections?
 - **P6:** What events/activities do you organize that need coordination?
 - **P7:** How do you handle emergency communications with parents?
@@ -128,12 +124,19 @@
 - **FP5:** Do you offer family discounts for multiple children?
 - **FP6:** What currencies need to be supported?
 
+### Auto-Billing System
+- **AB1:** What notification date works best for your parents (currently 25th)?
+- **AB2:** What overdue date should trigger late status (currently 1st of next month)?
+- **AB3:** Should parents receive reminder notifications before overdue date?
+- **AB4:** What happens when parents cannot pay via Billplz (technical issues)?
+- **AB5:** Should there be spending limits for additional items added to invoices?
+
 ### Financial Reporting
 - **FR1:** What financial reports do you need for tax purposes?
 - **FR2:** How often do you need revenue projections?
-- **FR3:** Do you need automated overdue payment reminders?
-- **FR4:** Should parents see payment history and upcoming dues?
-- **FR5:** Do you need integration with accounting systems?
+- **FR3:** Should the system generate automated collection efficiency reports?
+- **FR4:** Do you need integration with accounting systems for auto-billing data?
+- **FR5:** What payment analytics are important for business decisions?
 
 ---
 

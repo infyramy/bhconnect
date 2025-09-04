@@ -1,505 +1,364 @@
-# Complete Final Sitemaps & Flows - BrightHill Connect
+# System Sitemaps & User Flows
 
-**Version:** 2.0  
-**Last Updated:** 2025-08-22  
-**Status:** Final Standardized Version  
-**Context:** 700 students, RM560 monthly fees, RM1280 registration, Malaysian preschool network
+## Web Application Sitemaps
 
----
-
-## 🖥️ Web Application Complete Sitemap
-
-### 📈 Central Admin Complete Sitemap
+### HQ Admin Sitemap
 ```
-🏠 Dashboard
-├── Branch Selection (REQUIRED: Select branch before accessing any data)
-├── Analytics Overview (Selected branch metrics and KPIs)
-└── Performance Widgets (Real-time data for selected branch)
+Dashboard `/dashboard`
+├── Branch Selector (modal: branch list with search)
+├── Analytics Widgets (student count, revenue, teacher performance)
+└── Performance Metrics (attendance rates, payment completion, active users)
 
-🏢 Branch Management
-├── Branch List (Search, filter, and manage all branches)
-├── Add New Branch (Create branch with principal assignment)
-├── Edit Branch Details (Update branch information and capacity)
-├── Branch Performance (Attendance trends and financial overview)
-└── Branch Comparison (Multi-branch performance analysis)
+Branch Management `/branches`
+├── Branch List (main page: table with search, filter by status/region)
+├── Add Branch (modal: form with auto-principal creation)
+├── Edit Branch (modal: branch details form)
+├── Branch Settings (modal: select principal from admin list, branch config)
+└── View Performance (side panel: analytics for selected branch)
 
-👥 User Management
-├── Principal Management
-│   ├── Principal List (All branch principals with activity status)
-│   ├── Add New Principal (Create account with branch assignment)
-│   ├── Edit Principal (Update details and change assignments)
-│   └── Activity Logs (Track principal system usage)
-├── Financial Staff Management
-│   ├── Financial Staff List (All financial staff with branch assignments)
-│   ├── Add New Financial Staff (Create account with billing permissions)
-│   ├── Edit Financial Staff (Update details and branch assignment)
-│   └── Financial Activity Logs (Track billing and payment activities)
-└── Teacher Management
-    ├── Teacher List (All teachers across network with search)
-    ├── Add New Teacher (Create account and assign to branch)
-    ├── Edit Teacher (Update information and class assignments)
-    └── Performance Metrics (Attendance accuracy and communication)
+User Management `/users` (with tabs: admins, teachers, parents, students)
+├── Admin Tab `/users?tab=admins`
+│   ├── Admin List (main view: table with role badges)
+│   ├── Create Network Admin (modal: form + global permissions checkboxes)
+│   └── Edit Admin (modal: details + permissions)
+├── Teacher Tab `/users?tab=teachers`
+│   ├── Teacher List (main view: table with branch filter, performance metrics)
+│   ├── Add Teacher (modal: basic info + branch assignment)
+│   └── View Performance (side panel: attendance completion, engagement metrics)
+├── Parent Tab `/users?tab=parents`
+│   ├── Parent List (main view: table with children count, payment status)
+│   └── View Analytics (side panel: payment history, engagement stats)
+└── Student Tab `/users?tab=students`
+    ├── Student List (main view: table with branch/class filters)
+    └── View Analytics (side panel: attendance, grade trends)
 
-📢 Communications
-├── Network Announcements (Create and manage system-wide messages)
-└── Message Center (Direct communication with principals)
+Package Configuration `/packages`
+├── Programme Types (cards: Full Day, Half Day, Custom with toggle states)
+├── Set Amounts (inline edit: price fields per package)
+└── Billing Dates (form: notification date, due date settings)
 
-📊 Student Performance (Branch Selection Required)
-├── Academic Reports (Performance data for selected branch)
-├── Assessment Analytics (Trends and patterns by class)
-├── Progress Tracking (Individual student development)
-└── Comparative Analysis (Performance across time periods)
+Notifications & Announcements `/communications`
+├── Create Announcement
+│   ├── New Announcement (page: rich text editor, target selection, schedule)
+│   ├── Target Options (radio buttons: All Network, All Teachers, All Parents, Specific Branch)
+│   └── Schedule (optional: date/time picker)
+├── History (table: sent announcements with filters)
+└── Templates (list: reusable announcement templates)
 
-📋 Reports & Analytics
-├── Attendance Reports (Daily, weekly, monthly for selected branch)
-├── Financial Reports (RM560 collections and RM1280 registrations)
-├── User Activity Reports (Teacher and parent engagement)
-└── Performance Dashboard (Network-wide KPIs and trends)
-
-⚙️ System Settings
-└── Security Settings (Password policies and session management)
+System Settings `/settings`
+├── Global Settings
+│   ├── Notification Settings (toggles: email, push, SMS preferences)
+│   └── Billing Configuration (form: payment gateway, invoice templates)
+└── Audit & Reports
+    ├── Audit Logs (table: all billing activities with filters by date/branch/user)
+    └── System Reports (cards: exportable reports - revenue, user activity, performance)
 ```
 
-### 💰 Financial Staff Complete Sitemap
+### Branch Principal Sitemap
 ```
-🏠 Dashboard
-├── Financial Overview (Outstanding bills, payment collection rates)
-├── Recent Transactions (Daily payment activities and approvals)
-└── Payment Alerts (Overdue accounts and payment reminders)
+Dashboard `/dashboard`
+├── Branch Overview (metrics: total students, teachers, today's attendance)
+├── Teacher Activity (list: recent teacher actions, attendance completion)
+└── Today's Summary (cards: key alerts, pending tasks, recent activities)
 
-👨‍🎓 Student Billing Management (Manual Only)
-├── Create Student Bills
-│   ├── Select Students (Individual selection for manual billing)
-│   ├── Add Line Items (Tuition, meals, activities, late fees)
-│   ├── Set Amounts (Fixed: RM560 monthly, RM1280 registration)
-│   ├── Generate Invoice (Manual invoice creation)
-│   └── Send Notification (Notify parents via mobile app)
-├── Payment Processing
-│   ├── Billplz Integration (Monitor Billplz payment processing)
-│   ├── Manual Payment Verification (Approve uploaded receipts)
-│   ├── Payment Status Updates (Mark payments as received)
-│   └── Payment Confirmations (Send approval notifications)
+Student Management `/students`
+├── Student Operations
+│   ├── Student List (main view: table with class assignment, status badges)
+│   ├── Add Student (modal: form + package selection → auto-generates invoices)
+│   ├── Edit Student (modal: student details, class assignment)
+│   └── View Profile (side panel: complete student info, parent details, billing history)
+└── Class Management
+    ├── Class List (sub-page: `/students/classes` - table of classes)
+    ├── Create Class (modal: class details, capacity, schedule)
+    ├── Edit Class (modal: class info, assigned students/teachers)
+    └── Assign Students (modal: drag-drop interface or checkboxes)
 
-📊 Financial Reports & Analytics
-├── Revenue Tracking (Daily, weekly, monthly income reports)
-├── Collection Efficiency (Payment success rates and trends)
-├── Outstanding Balances (Overdue accounts requiring follow-up)
-└── Payment Method Analysis (Gateway vs manual payment breakdown)
+Teacher Management `/teachers`
+├── Teacher Operations
+│   ├── Teacher List (main view: table with class assignments, performance scores)
+│   ├── Add Teacher (modal: teacher details + class assignment checkboxes)
+│   ├── Edit Teacher (modal: teacher info, reassign classes)
+│   └── View Performance (side panel: attendance completion %, engagement metrics, parent feedback)
+└── Class Assignments
+    ├── Assignment Matrix (page: grid showing teacher-class assignments)
+    └── Bulk Reassign (modal: drag-drop or checkbox interface)
 
-💳 Billplz Payment Management
-├── Transaction Monitoring (Real-time Billplz payment status)
-├── Failed Payment Recovery (Handle declined Billplz transactions)
-├── Payment History (View all Billplz transactions)
-└── Billplz Integration Settings (Configure Billplz connection)
-```
+Parent Management `/parents`
+├── Parent Operations
+│   ├── Parent List (main view: table with linked children, contact status)
+│   ├── Edit Parent (modal: contact details, link/unlink children)
+│   └── Generate Access Code (modal: parent account setup with QR code)
+└── Communication
+    ├── Parent Messages (side panel: message threads, reply interface)
+    └── Message History (table: all parent communications with search)
 
-### 👩‍🏫 Teachers Role (Web Admin) Complete Sitemap
-```
-🏠 Dashboard
-├── Assigned Classes Overview (Current class assignments and student counts)
-├── Photo Attendance Summary (Daily attendance with photo requirements)
-└── Today's Summary (Key metrics and alerts for assigned classes)
+Admin Account Management `/admins`
+├── Admin Operations
+│   ├── Admin List (main view: table with permission badges)
+│   ├── Create Admin (modal: details + granular permission checkboxes)
+│   │   ├── Student Management Access
+│   │   ├── Teacher Management Access
+│   │   ├── Parent Management Access
+│   │   ├── Billing Access
+│   │   ├── Reports Access
+│   │   └── Message Permission
+│   └── Edit Permissions (modal: permission matrix with toggles)
 
-👨‍🎓 Student Management (Limited to Assigned Classes)
-├── Student List (Search & filter students from assigned classes only)
-├── View Student Profile (Academic information for assigned students)
-├── Student Attendance History (View attendance patterns)
-└── Student Academic Progress (View and update progress reports)
+Billing & Invoices `/billing`
+├── Invoice Management
+│   ├── Student Billing (main view: table per student with payment status)
+│   ├── Add Additional Items (modal: select student, add items to current invoice)
+│   └── Payment Monitoring (dashboard: outstanding vs paid with charts)
+└── Reports & Analytics
+    ├── Invoice Reports (table: exportable billing data with filters)
+    └── Payment Analytics (charts: revenue trends, payment method breakdown)
 
-📸 Attendance Management (Same as Principal)
-├── Mark Daily Attendance (Present/absent with photo capture)
-├── View Attendance Reports (Daily, weekly attendance for assigned classes)
-├── Photo Upload Management (Handle attendance photo uploads)
-└── Edit Attendance (Past records with approval required)
+Reports `/reports`
+├── Attendance Reports (charts: class attendance trends, student patterns)
+├── Billing Analytics (metrics: revenue, outstanding payments, payment methods)
+└── Branch Performance (dashboard: overall branch metrics vs network average)
 
-📚 Academic Assessment (Same as Principal)
-├── Grade Entry (Mid-term and final examinations for assigned students)
-├── Progress Reports (Enter academic assessments and notes)
-├── Assessment History (View previous assessments and trends)
-└── Academic Analytics (Class performance metrics)
-
-💬 Messages (Same as Principal)
-├── Parent Messages (Direct communication with parents of assigned students)
-├── Principal Messages (Communication with branch principal)
-├── Message History (All sent and received messages)
-└── Send Announcements (To parents of assigned students only)
-```
-
-### 🏫 Branch Principal Complete Sitemap
-```
-🏠 Dashboard
-├── Branch Overview (Student count, attendance, fee collection status)
-├── Teacher Activity (Daily posts, attendance completion rates)
-└── Today's Summary (Key metrics and alerts for current day)
-
-👨‍🎓 Student Management
-├── Student List
-│   ├── Search & Filter (By class, status, payment status)
-│   ├── Add Student & Link Parent (Create record with parent connection)
-│   └── Edit Student Profile (Update information and class assignment)
-├── Class Management
-│   ├── Class List (Current classes with enrollment and teachers)
-│   ├── Create New Class (Set capacity limit of 12 students maximum)
-│   ├── Assign Students to Classes (Move between classes)
-│   └── Assign Teachers to Classes (Set primary teacher per class)
-└── Student Analytics
-    ├── Attendance Patterns (Individual and class attendance trends)
-    └── Performance Metrics (Assessment results and progress)
-
-👨‍🏫 Teacher Management
-├── Teacher List (All teachers assigned to this branch)
-├── Add New Teacher (Create account and set class assignments)
-├── Edit Teacher Profile (Update contact and qualification details)
-├── Class Assignments (Manage teacher-class relationships)
-└── Teacher Performance (Activity metrics and parent feedback)
-
-💰 Payment Management (Manual Invoice Creation)
-├── Create Student Bills
-│   ├── Select Students (Individual or multiple selection)
-│   ├── Add Billing Items (Tuition RM560, Registration RM1280, etc.)
-│   ├── Enter Custom Amounts (Flexible pricing per item)
-│   ├── Generate Invoice (Manual invoice creation only)
-│   └── Send Notification (Notify parents via mobile app)
-├── Payment Tracking
-│   ├── Payment Overview (All payment statuses by student)
-│   ├── Review Payment Receipts (Verify uploaded payment proofs)
-│   ├── Approve Payment Proofs (Update status with approval notes)
-│   ├── Overdue Accounts (Late payments tracking)
-│   └── Payment History (Complete payment records per student)
-└── Financial Reports
-    ├── Revenue Analysis (Monthly income and seasonal patterns)
-    └── Collection Trends (Payment success rates)
-
-📢 Communications
-├── Branch Announcements
-│   ├── Announcement List (Branch and network announcements)
-│   ├── Create Announcement (Target specific classes or all parents)
-│   └── Engagement Statistics (View rates and parent responses)
-└── Parent Messages Center
-    ├── All Parent Messages (New, In Progress, Closed status)
-    ├── Message Details (View message content and reply history)
-    ├── Reply to Parent (Max 3 replies per message thread)
-    ├── Message History (Archive of completed messages)
-    └── Send Message to Staff (Direct communication with teachers/admin)
-
-📅 Calendar & Events
-├── View Toggle (Calendar Mode OR List Mode)
-├── Event Management
-│   ├── Create Event
-│   │   ├── Event Title (Short descriptive name)
-│   │   ├── Event Type (Academic/Religious/Operational/Activity/Community)
-│   │   ├── Description (Details, agenda, special notes)
-│   │   ├── Date & Time (Start, end, all-day toggle)
-│   │   ├── Location (School hall, field, external venue)
-│   │   └── Notification Settings (Push now/1 day reminder/don't send)
-│   ├── Edit Event (Update all event details and settings)
-│   └── Delete Event (Remove event with confirmation)
-└── Event Details View (Full information display when selected)
-
-📊 Reports & Analytics
-├── Branch Performance (Overall metrics and KPIs for branch)
-├── Attendance Reports (Daily, weekly, monthly patterns)
-└── Financial Summary (RM560 collection rates and balances)
+Notifications `/notifications`
+├── Create Announcement (modal: rich text editor, target selection within branch)
+├── Message Management (page: parent inquiry queue with reply interface)
+└── Announcement History (table: sent branch announcements)
 ```
 
----
-
-## 📱 Mobile Application Complete Sitemap
-
-### 👩‍🏫 Teacher App Complete Sitemap
+### Teacher Web Sitemap
 ```
-🏠 Home
-├── Current Class Overview (Today's assigned classes)
-├── Quick Actions Dashboard (Attendance shortcuts, announcements)
-├── Recent Activity Summary (Latest updates and notifications)
-└── Daily Schedule (Current and upcoming classes)
+Dashboard `/dashboard`
+├── Assigned Classes (cards: view-only class info with student counts)
+├── Today's Summary (alerts: pending attendance, grade submissions)
+├── Quick Actions (buttons: rapid attendance, grade entry shortcuts)
+└── Recent Activity (feed: recent posts, messages, notifications)
 
-🏫 Classroom
-├── Classroom Selection (List of admin-assigned classrooms only)
-├── Selected Classroom Dashboard
-│   ├── Summary
-│   │   ├── Student Overview (Total students, attendance rates)
-│   │   ├── Performance Metrics (Assessment progress)
-│   │   └── Recent Activity (Latest posts and updates)
-│   ├── Feed
-│   │   ├── Create Text Update (Write classroom activity description)
-│   │   ├── Tag Students (Select which students to include in post)
-│   │   ├── Posted Updates History (View previous posts)
-│   │   ├── Edit Updates (Modify existing posts and student tags)
-│   │   └── View Upvotes (See parent engagement with posts)
-│   └── Quick Actions
-│       ├── Attendance (Current day attendance marking)
-│       └── Grade Mark (Assessment entry for exams)
+Student Management `/students` (Filtered Views - Only Assigned Classes)
+├── Student List (main view: only assigned students with class grouping)
+├── View Profile (side panel: academic progress, notes, parent contact)
+├── Progress Tracking (page: grade trends, attendance patterns per student)
+└── Student Notes (modal: add/edit observations and notes)
 
-📸 Photo Attendance (From Classroom Quick Action)
-├── Current Day Attendance (Today's date, selected classroom)
-├── Camera Interface Activation (Automatic photo capture mode)
-├── Individual Student Photo Capture
-│   ├── Take Photo (One photo per student required)
-│   ├── Clear Face Visibility (Quality check for identification)
-│   ├── Failed Photo Retry (Re-take if upload fails)
-│   └── Photo Upload Confirmation (Verify successful submission)
-├── Mark Attendance with Photos (Present/Absent with photo verification)
-├── Add Remarks (Optional notes for absent students)
-├── Submit Attendance with Photos (All photos uploaded to backend)
-├── Upload Status Verification (Confirm all photos submitted successfully)
-├── Past Attendance Records (View/edit historical data)
-└── Edit Approval Required (Past edits need admin approval)
+Attendance `/attendance` (Process-Driven Pages)
+├── Select Class (page: class cards with student counts)
+├── Daily Attendance (page: student grid, one-by-one photo capture)
+│   ├── Present/Absent toggle per student
+│   ├── Photo capture modal for present students
+│   ├── Review page with thumbnails
+│   └── Submit all photos to API
+├── Attendance History (table: past records with edit request buttons)
+└── Photo Management (gallery: stored attendance photos with dates)
 
-📊 Grade Mark (From Classroom Quick Action)
-├── Exam Selection (Choose exam type: Midterm, Final, etc.)
-├── Student Selection (Choose student from classroom)
-├── Subject Areas (Reading, Numbers, Social, Physical, Creative)
-├── Grade Entry (Excellent/Good/Satisfactory/Needs Support)
-├── Teacher Comments (Optional notes for each subject)
-├── Save Grades (Confirm and submit assessment)
-└── Grade History (View previous assessments for comparison)
+Grading & Assessment `/grades` (Multi-Step Process)
+├── Grade Entry (process page):
+│   ├── Step 1: Exam selection (Midterm, Final, Assessment)
+│   ├── Step 2: Student selection from assigned classes
+│   ├── Step 3: Subject grading (5 areas: Reading, Numbers, Social, Physical, Creative)
+│   └── Step 4: Review and save (tied to exam & student)
+├── Progress Reports (page: generate, preview, print reports)
+└── Grade History (table: past grades with comparison charts)
 
-💬 Messages
-├── Message Center
-│   ├── Parent Messages (Reply to parent inquiries only)
-│   ├── Principal Messages (Two-way communication with principal)
-│   └── Announcements (View branch and school announcements)
-├── Send Message (To principal or reply to parent)
-├── Message Search (Find by sender, date, or subject)
-└── Message History (All sent and received messages)
+Communication `/messages` (Message Center Interface)
+├── Message Threads (page: conversation view)
+│   ├── Parent Messages (reply-only, no initiation)
+│   └── Principal/Admin Messages (two-way communication)
+├── Announcements (feed: branch & HQ notifications)
+└── Message History (archive: sent/received with search)
 
-👤 Profile
-├── View Profile (Teacher name, contact info, assigned classes)
-├── Edit Profile (Update contact information)
-├── Settings
-│   ├── Notification Preferences (Push notification settings)
-│   └── App Information (Version, help, terms of service)
-└── Logout (Sign out of teacher account)
+Classroom Feed `/classroom` (Social Feed Interface)
+├── Create Posts (modal: text composer with student tagging)
+├── Tag Students (feature: child-specific posts with @ mentions)
+├── Post Management (actions: edit/delete own posts)
+└── Parent Engagement (metrics: view upvote counts, no direct interaction)
+
+Profile & Settings `/profile`
+├── Teacher Info (form: name, contact, photo upload)
+├── Class Assignments (read-only: current assignments)
+├── Performance Metrics (dashboard: attendance completion, engagement scores)
+└── Settings (preferences: notifications, app behavior)
 ```
 
-### 👨‍👩‍👧‍👦 Parent App Complete Sitemap
+## Mobile Application Sitemaps
+
+### Teacher Mobile Sitemap
 ```
-🏠 Dashboard
-├── Child Overview Cards (Swipeable cards - one per child)
-│   ├── Child Basic Information (Name, class, teacher)
-│   ├── Today's Attendance Status (Present/Absent with time)
-│   └── Latest Classroom Update (Most recent tagged post summary)
-├── Principal Announcements (School-wide and branch announcements)
-└── Payment Reminders (Outstanding fees and due dates)
+Home `/home` (Dashboard Screen with Cards)
+├── Today's Classes (cards: swipeable class list with student counts)
+├── Quick Actions (buttons: attendance shortcut, grade mark)
+├── Notifications (badge: announcements, messages count)
+└── Activity Summary (cards: recent activity overview)
 
-👶 My Child
-├── Child Basic Information (Name, class, teacher details)
-├── Attendance History (Simple list view of daily attendance)
-├── Classroom Updates (Select classroom to view full activity feed)
-├── Progress Reports (Mid-year and final assessment results)
-├── Grade History (Previous assessment results and trends)
-└── Upvote Posts (Engage with classroom updates - no comments)
+Classroom `/classroom` (Multi-Screen Flow - Tab-based with floating action buttons)
+├── Select Classroom (screen: admin-assigned classes only)
+├── Dashboard (screen: class overview with metrics)
+├── Feed (screen: create updates, tag students, view posts)
+└── Quick Actions (Floating Action Buttons)
+    ├── Attendance Flow:
+    │   ├── Screen 1: Student list (present/absent toggle)
+    │   ├── Screen 2: Photo capture (one-by-one required)
+    │   ├── Screen 3: Review (thumbnails, absent list)
+    │   └── Screen 4: Submit (API upload confirmation)
+    └── Grade Mark Flow:
+        ├── Screen 1: Exam selection
+        ├── Screen 2: Student selection
+        ├── Screen 3: Subject grading (5 areas with sliders/buttons)
+        └── Screen 4: Save confirmation
 
-💰 Payments (Billplz Integration)
-├── Outstanding Bills (Itemized invoices with payment options)
-├── Billplz Payment Integration
-│   ├── Pay via Billplz (Online banking, e-wallets, cards)
-│   ├── Billplz Payment Portal (Secure payment processing)
-│   ├── Payment Confirmation (Real-time Billplz status updates)
-│   └── Billplz Receipts (Automatic receipt from Billplz)
-├── Manual Payment Upload
-│   ├── Upload Receipt (Submit manual payment proof)
-│   ├── Payment Status Tracking (Pending/Approved status)
-│   └── Staff Verification (Manual approval notifications)
-├── Payment History (Complete transaction records)
-└── Bill Details (Itemized invoice breakdown with due dates)
+Attendance History `/attendance-history` (List Screen with Edit Requests)
+├── List view with search
+└── Edit request modals
 
-💬 Messages
-├── Create New Message (Send message to principal/staff with title and content)
-├── Message History (All previous messages and replies)
-├── Reply to Messages (Respond after staff replies - max 3 exchanges)
-└── Important Messages (Starred or urgent communications)
+Student Progress `/student-progress` (Profile Screens)
+├── Student cards
+├── Progress charts
+└── Notes
 
-📅 Calendar & Events
-├── View Toggle (Calendar Mode OR List Mode)
-├── Event Details (Full information for selected events)
-└── Event Reminders (Automatic notifications for upcoming events)
+Messages `/messages` (Chat Interface - Tabbed message center)
+├── Parent Messages (screen: reply-only threads)
+├── Principal Messages (screen: two-way communication)
+├── Admin Messages (screen: two-way communication)
+├── Announcements (screen: notification feed)
+└── History (screen: archived conversations)
 
-👤 Profile
-├── Parent Information (Current user details for editing)
-├── Linked Children (View and update child information)
-├── Link Additional Child (Request to link other children - admin verification)
-├── Settings
-│   ├── Notification Preferences (Payment reminders and updates)
-│   └── App Information (Version, help, contact information)
-└── Logout (Sign out of parent account)
+Profile `/profile` (Settings Screen)
+├── Profile form
+├── Preferences
+└── Logout
 ```
 
----
+### Parent Mobile Sitemap
+```
+Dashboard `/dashboard` (Card-Based Dashboard)
+├── Child Overview (cards: swipeable for multiple children)
+│   ├── Today's attendance status (badge: present/absent/pending)
+│   ├── Latest classroom update summary
+│   └── Child info (name, class, teacher with photos)
+├── Notifications (center: billing, announcements, messages with badges)
+├── Payment Reminders (alerts: due dates, overdue with amounts)
+└── Announcements (card: principal/HQ announcements)
 
-## 🔄 Complete User Flows
+My Child `/child` (Tab-Based Child Profile - Child selector if multiple + tabs)
+├── Attendance (screen: simple list view, no calendar complexity)
+├── Updates (screen: teacher posts tagged to this child only)
+│   ├── View text-only updates
+│   └── Upvote posts (no commenting allowed)
+├── Progress (screen: assessment results, grade reports)
+└── Grades (screen: midterm, final assessment grades with charts)
 
-### Flow 1: Teacher Daily Attendance
-**Page Flow:** Home → Classroom → Select Classroom → Quick Actions: Attendance → Mark → Save
-1. **Home Page** - View today's assigned classes
-2. **Classroom Tab** - Access classroom management
-3. **Select Classroom** - Choose from admin-assigned classrooms only
-4. **Quick Actions** - Tap Attendance button
-5. **Attendance Page** - Current day attendance for selected classroom
-6. **Student List** - Display all students with names (no photos)
-7. **Mark Status** - Tap Present/Absent for each student (no Late option)
-8. **Add Remarks** - Optional notes for absent students
-9. **Save Attendance** - Confirm and submit record
-10. **Confirmation** - Success message and return to classroom dashboard
+Billing & Invoices `/billing` (Payment-Focused Screens - Tab-based billing center)
+├── Outstanding Invoices (screen: list with due dates, amounts)
+├── Payment Flow (integrated Billplz):
+│   ├── Screen 1: Invoice details (monthly + additional items)
+│   ├── Screen 2: Payment method selection (FPX, e-wallets, cards)
+│   ├── Screen 3: Payment confirmation (automatic receipt)
+│   └── Screen 4: Status confirmation (real-time updates)
+├── Payment History (screen: transaction records with search)
+└── Notifications (settings: 25th monthly alerts, overdue reminders)
 
-### Flow 2: Teacher Classroom Update
-**Page Flow:** Home → Classroom → Select Classroom → Feed → Create Update → Tag Students → Post
-1. **Home Page** - Access classroom navigation
-2. **Classroom Tab** - Select classroom management
-3. **Select Classroom** - Choose from assigned classrooms
-4. **Feed Section** - Access classroom feed
-5. **Create Update** - Text entry for activity description
-6. **Tag Students** - Select students from class list
-7. **Preview Post** - Review content and tagged students
-8. **Post Update** - Submit to tagged students' parents
-9. **Confirmation** - Success message with parent count
+Messages `/messages` (Communication Center - Compose + history tabs)
+├── Send Message (screen: compose with subject/content required)
+├── Branch Communication (feature: sent to principal/admin with message permission)
+├── Message Threading (limitation: up to 3 exchanges per inquiry)
+├── History (screen: conversation archive with search)
+└── Announcements (screen: important HQ & branch notifications)
 
-### Flow 3: Parent View Child Updates
-**Page Flow:** Dashboard → My Child → Classroom Updates → View Details → Upvote
-1. **Dashboard Page** - Swipe to child's overview card
-2. **My Child Page** - Access full child information
-3. **Classroom Updates** - View feed of tagged activities
-4. **Update Details** - Read full content and view engagement
-5. **Upvote Action** - Show appreciation for post (no comments)
-6. **Return to Feed** - Continue viewing other updates
+Profile `/profile` (Settings & Account Management - Section-based profile)
+├── Parent Info (section: personal details, contact, photo)
+├── Linked Children (section: current children with link/unlink actions)
+│   ├── View child details
+│   └── Request additional child linking (admin verification required)
+├── Settings (section: notification preferences, app language)
+└── Support (section: contact branch, FAQ access)
+```
 
-### Flow 4: Parent Payment Process
-**Page Flow:** Dashboard → Payments → Upload Receipt → Submit → Confirmation
-1. **Dashboard Page** - View payment reminder notification
-2. **Payments Page** - See what is due and payment history
-3. **Upload Receipt** - Take photo or select from gallery
-4. **Payment Details** - Confirm amount and payment method
-5. **Submit for Approval** - Send to principal for verification
-6. **Confirmation** - Receipt uploaded successfully message
-7. **Status Tracking** - Monitor approval status
+## Key User Flows
 
-### Flow 5: Principal Student Registration
-**Page Flow:** Dashboard → Student Management → Add Student → Parent Linking → Save
-1. **Dashboard Page** - Access management features
-2. **Student Management** - Navigate to student records
-3. **Add New Student** - Enter student basic information
-4. **Parent Information** - Enter parent contact details
-5. **Link Parent Account** - Create parent login credentials
-6. **Class Assignment** - Select appropriate class (max 12 students)
-7. **Save Record** - Confirm and create student profile
-8. **Generate Token** - Provide parent with app access code
+### HQ Branch Creation Flow
+1. HQ creates new branch → Auto-generates Principal account
+2. Principal account created with full branch permissions
+3. HQ can later reassign principal role to different admin account via Branch Settings
 
-### Flow 6: Principal Payment Approval
-**Page Flow:** Dashboard → Payment Management → Review Receipts → Approve → Update Status
-1. **Dashboard Page** - View pending payment notifications
-2. **Payment Management** - Access fee collection tools
-3. **Review Receipts** - View uploaded payment proofs
-4. **Verify Payment** - Check receipt details and amounts
-5. **Approve/Reject** - Make verification decision
-6. **Add Notes** - Include approval comments
-7. **Update Status** - Change payment status to approved
-8. **Notify Parent** - Automatic confirmation to parent
+### Branch Principal Admin Account Creation Flow
+1. Principal goes to Admin Account Management → Create Admin Account
+2. Set user details and select page category permissions:
+   - Student Management Access (View, Add, Edit)
+   - Teacher Management Access (View, Add, Edit, Assign Classes)
+   - Parent Management Access (View, Communication)
+   - Billing Access (View Invoices, Add Additional Items)
+   - Reports Access (Attendance, Billing, Performance)
+   - Message Permission (Handle Parent Messages)
+3. Admin account activated with specific permissions only
 
-### Flow 7: Teacher Grading Flow
-**Page Flow:** Home → Classroom → Select Classroom → Quick Actions: Grade Mark → Select Exam → Select Student → Grade
-1. **Home Page** - Access classroom navigation
-2. **Classroom Tab** - Select classroom management
-3. **Select Classroom** - Choose from assigned classrooms
-4. **Quick Actions** - Tap Grade Mark button
-5. **Exam Selection** - Choose exam type (Midterm, Final, etc.)
-6. **Student Selection** - Choose student from classroom list
-7. **Subject Grading** - Rate each of 5 subjects
-8. **Grade Entry** - Select grade level for each subject
-9. **Add Comments** - Optional teacher notes
-10. **Save Grades** - Confirm and submit assessment
-11. **Confirmation** - Success message and grade saved
+### Teacher One-by-One Attendance Flow
+1. Open Classroom → Select Class → Attendance
+2. For each present student: Select → Snap photo → Save with thumbnail
+3. Review all thumbnails and absent list
+4. Final save sends all photos to API storage
 
-### Flow 8: Teacher Photo Attendance Flow (Enhanced)
-**Page Flow:** Home → Classroom → Select Classroom → Quick Actions: Attendance → Camera → Photo Capture → Submit
-1. **Home Page** - Access classroom navigation
-2. **Classroom Tab** - Select classroom management
-3. **Select Classroom** - Choose from assigned classrooms
-4. **Quick Actions** - Tap Attendance button
-5. **Camera Activation** - Automatic camera interface launch
-6. **Individual Photo Capture** - Take photo of each student
-7. **Photo Quality Check** - Verify clear face visibility
-8. **Attendance Status** - Mark Present/Absent with photo
-9. **Photo Upload** - All photos uploaded to backend storage
-10. **Upload Confirmation** - Verify successful photo submission
-11. **Submit Attendance** - Finalize attendance with photos
-12. **Success Notification** - Confirmation of complete submission
+### Parent Billing Notification Flow
+1. Receive notification on 25th (HQ configured date)
+2. Tap notification → View invoice (monthly + additional items)
+3. Tap Pay → Redirect to Billplz
+4. Complete payment → Automatic receipt and status update
 
-### Flow 9: Financial Staff Manual Billing Creation Flow
-**Page Flow:** Dashboard → Create Bill → Select Student → Add Items → Generate → Send
-1. **Dashboard** - View outstanding bills and payment status
-2. **Create Student Bill** - Access manual billing system
-3. **Select Student** - Choose individual student for billing
-4. **Add Line Items** - Enter tuition, meals, activities, fees
-5. **Set Amounts** - Use fixed amounts (RM560 monthly, RM1280 registration)
-6. **Generate Invoice** - Create invoice manually
-7. **Review Invoice** - Verify invoice details and accuracy
-8. **Send Notification** - Notify parents via mobile app
-9. **Track Status** - Monitor payment status manually
+### Student Enrollment Auto-Invoice Flow
+1. Principal adds student → Select package → Fill details
+2. System auto-generates: Registration fee + monthly invoices from enrollment month to year-end
+3. Parent receives access code → Sets up account with linked student
 
-### Flow 10: Parent Billplz Payment Flow
-**Page Flow:** Dashboard → Payments → Select Bill → Pay via Billplz → Confirmation
-1. **Dashboard** - View payment alerts and outstanding bills
-2. **Payments Screen** - See itemized invoices with due dates
-3. **Select Invoice** - Choose specific bill to pay
-4. **Payment Options** - Choose between Billplz or manual upload
-5. **Billplz Payment** - Redirected to Billplz payment portal
-6. **Payment Method** - Select bank/e-wallet/card via Billplz
-7. **Process Payment** - Complete payment via Billplz gateway
-8. **Payment Confirmation** - Return to app with payment status
-9. **Billplz Receipt** - Automatic receipt from Billplz
-10. **Status Update** - Bill marked as paid in system
+### Additional Item Billing Flow
+1. Principal/Admin selects student
+2. Add items to current month invoice (before 25th) - No parent approval needed
+3. Items added to existing monthly invoice
+4. Parent receives combined invoice on notification date
 
-### Flow 11: Teacher Attendance Edit Flow (Approval Required)
-**Page Flow:** Home → Classroom → Select Classroom → Quick Actions: Attendance → Past Records → Edit → Submit for Approval
-1. **Home Page** - Access classroom navigation
-2. **Classroom Tab** - Select classroom management
-3. **Select Classroom** - Choose from assigned classrooms
-4. **Quick Actions** - Tap Attendance button
-5. **Past Records** - View historical attendance data
-6. **Select Date** - Choose date to edit
-7. **Edit Attendance** - Modify student attendance status
-8. **Add Edit Reason** - Required explanation for change
-9. **Submit for Approval** - Send edit request to admin
-10. **Pending Status** - Edit marked as pending approval
-11. **Notification** - Receive approval/rejection notification
+### Parent Messaging Flow
+1. Parent opens Messages → Send Message to Branch
+2. Message sent to Branch (received by Principal OR Admin with Message Permission)
+3. Branch Principal/Admin replies through web app
+4. Parent receives reply in mobile app
+5. Maximum 3 exchanges per message thread
 
----
+### HQ Announcement Flow
+1. HQ creates announcement → Select target audience:
+   - All Network (Everyone)
+   - All Teachers (Network-wide)
+   - All Parents (Network-wide)
+   - Specific Branch (Branch users only)
+2. Announcement sent via push notification
+3. Recipients receive in mobile app notifications
 
-## 📋 Standardization Notes
+### Branch Announcement Flow
+1. Branch Principal creates announcement → Select target:
+   - All Branch Users
+   - Branch Teachers only
+   - Branch Parents only
+2. Announcement sent to branch-related users only
+3. Recipients receive in mobile app notifications
 
-### Naming Conventions
-- **Consistent Terminology:** "Student" (not "child" in admin context), "Parent" (not "guardian")
-- **Action Verbs:** Create, Edit, View, Delete, Add, Remove, Update, Manage
-- **Status Labels:** Active, Inactive, Pending, Approved, Rejected, Completed
-- **Malaysian Context:** RM currency, Malaysian English terminology
+## System Business Rules
 
-### Interface Standards
-- **Navigation:** Clear breadcrumbs and back buttons on all pages
-- **Forms:** Required fields marked, validation messages, save/cancel options
-- **Lists:** Search, filter, sort options where applicable
-- **Notifications:** Success, error, warning, info message types
-- **Loading States:** Progress indicators for all data operations
+### Attendance
+- Photo mandatory for present students only
+- No backup methods for unclear photos
+- One-by-one process required
+- Past edits require admin approval
 
-### Business Rules Applied
-- **No Child Photos:** Only names and basic information throughout system
-- **Payment Amounts:** RM560 monthly, RM1280 registration consistently
-- **Class Limits:** Maximum 12 students per class enforced
-- **Message Limits:** Parent-principal max 3 reply exchanges
-- **Branch Restrictions:** All users operate within assigned branch only
-- **Teacher Classroom Access:** Teachers only see admin-assigned classrooms
-- **Attendance Restrictions:** Present/Absent only (no Late option)
-- **Edit Approval:** Past attendance edits require admin approval
-- **Grade Exam Linking:** All grades tied to specific exam types
-- **Settings Simplified:** Basic notifications only, no theme or advanced options
+### Billing
+- HQ configurable package amounts
+- Additional items: no parent approval, no spending limits
+- Auto-reminders for unpaid invoices after due date
+- Audit logs for all billing activities
 
-### Technical Requirements
-- **Responsive Design:** Mobile-first for parent/teacher, desktop-optimized for admin/principal
-- **Offline Capability:** Core functions work without internet connection
-- **Data Sync:** Automatic synchronization when connection restored
-- **Security:** Role-based access control, secure authentication
-- **Performance:** Fast loading, efficient data handling for 700+ students
+### Communication
+- Classroom posts: text only, no approval required
+- Parent messages: sent to branch (handled by Principal OR Admin with Message Permission)
+- Branch Principal/Admin with permissions handles parent communication
+- HQ and branch can create targeted announcements
+- Message threading with maximum 3 exchanges per inquiry
 
----
-
-**Final Status:** All sitemaps and flows are standardized and synchronized across platforms. Ready for development implementation.
+### System Configuration
+- HQ auto-creates principal accounts when creating branches
+- Branch principals create admin accounts with specific page permissions
+- HQ sets all package amounts and billing dates
+- Billing system generates invoices during enrollment
+- Admin accounts have granular permissions for page categories

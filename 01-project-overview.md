@@ -8,12 +8,12 @@
 
 BrightHill Connect is a comprehensive preschool/kindergarten management system designed to streamline operations across multiple branches while providing a centralized digital platform for all stakeholders.
 
-### Core Goals (Keep It Simple)
-1. **Replace WhatsApp** - Professional communication platform
-2. **Digital Attendance** - Teachers mark attendance on mobile
-3. **Photo Sharing** - Teachers post classroom photos to parents
-4. **Payment Tracking** - Parents upload receipt photos
-5. **Progress Reports** - Simple assessments twice per year
+### Core System Features
+1. **HQ Configurable Packages** - All programme types with configurable amounts
+2. **Auto-Billing System** - Registration + monthly invoices from enrollment to year-end
+3. **One-by-One Photo Attendance** - Mandatory photos for present students, no alternatives
+4. **No Post Approval** - Classroom feed posts publish immediately
+5. **Audit Logs** - All billing activities logged for HQ review
 
 ## 🏢 Organization Structure
 
@@ -28,9 +28,9 @@ BrightHill Connect is a comprehensive preschool/kindergarten management system d
 
 | Who | Uses What | Does What |
 |-----|-----------|-----------|
-| **Admin/Principal** | Web App | Manage students, teachers, generate reports |
-| **Teachers** | Mobile App | Mark attendance, post photos, simple grading |
-| **Parents** | Mobile App | View child updates, pay fees, message teachers |
+| **HQ/Branch Principal** | Web App | HQ configurable packages, auto-billing, configurable admin accounts |
+| **Teachers** | Mobile App | One-by-one photo attendance (mandatory), text classroom updates |
+| **Parents** | Mobile App | Auto-billing notifications (25th), Billplz payments, child updates |
 
 ## 🛠 Technical Architecture
 
@@ -102,6 +102,7 @@ BrightHill Connect is a comprehensive preschool/kindergarten management system d
 - [User Roles & Permissions](02-user-roles.md)
 - [Feature Specifications](03-feature-specifications.md)
 - [Site Maps & User Flows](04-sitemaps-flows.md)
+- [Complete Menu Hierarchy](10-menu-ideas.md)
 - [Technical Requirements](05-technical-requirements.md)
 - [Context Questions](06-context-questions.md)
 
